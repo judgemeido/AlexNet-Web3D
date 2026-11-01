@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>弈心五子棋 · Gomoku Master</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- 首页 -->
+    <section id="view-home" class="view active">
+      <div class="card home-card">
+        <div class="logo">
+          <span class="stone black"></span>
+          <span class="stone white"></span>
+        </div>
+        <h1 class="title">弈心五子棋</h1>
+        <p class="subtitle">Gomoku Master · 智能人机对战</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" data-goto="difficulty">开始游戏</button>
+          <button class="btn btn-ghost" data-goto="leaderboard">排行榜</button>
+        </div>
+        <p class="tip">你执黑子先手，率先连成五子者获胜</p>
+
+        <div class="intro">
+          <h3 class="intro-title">什么是五子棋</h3>
+          <p class="intro-text">
+            五子棋（Gomoku）是一种两人对弈的纯策略棋类游戏，在 15×15 的棋盘上进行。
+            双方轮流在交叉点落子，谁先把自己的五颗棋子在横、竖或斜方向上连成一条直线，谁就获胜。
+            规则简单，却蕴含丰富的攻防变化，讲究进攻与防守的平衡。
+          </p>
+
+          <h3 class="intro-title">游戏规则</h3>
+          <ol class="rule-list">
+            <li>棋盘为 15×15，黑白双方轮流在空白交叉点落子。</li>
+            <li>你执<strong>黑子先手</strong>，电脑执白子后手。</li>
+            <li>率先在横、竖或任一斜线方向连成<strong>五子</strong>的一方获胜。</li>
+            <li>棋子落定后不可移动；本作允许悔棋以便练习。</li>
+            <li>棋盘下满仍无人连成五子则为和棋。</li>
+          </ol>
+
+          <h3 class="intro-title">上手技巧</h3>
+          <ul class="rule-list tips">
+            <li>抢占天元（中心）与周边要点，争取主动。</li>
+            <li>形成“活三”“活四”制造多重威胁，让对手顾此失彼。</li>
+            <li>时刻留意对方的连子，及时封堵其成五的关键点。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 难度选择 -->
+    <section id="view-difficulty" class="view">
+      <div class="card">
+        <button class="back-btn" data-goto="home">← 返回</button>
+        <h2 class="view-title">选择难度</h2>
+
+        <label class="field">
+          <span class="field-label">你的姓名</span>
+          <input id="player-name" type="text" maxlength="12" placeholder="请输入姓名" />
+        </label>
+
+        <div class="mode-group">
+          <h3 class="group-title">常规难度</h3>
+          <div class="difficulty-list">
+            <button class="diff-item" data-diff="easy">
+              <span class="diff-name">简单</span>
+              <span class="diff-desc">适合新手，AI 反应较弱</span>
+            </button>
+            <button class="diff-item" data-diff="medium">
+              <span class="diff-name">中等</span>
+              <span class="diff-desc">攻守兼备，需认真应对</span>
+            </button>
+            <button class="diff-item" data-diff="hard">
+              <span class="diff-name">困难</span>
+              <span class="diff-desc">深度搜索，全力出击</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mode-group">
+          <h3 class="group-title">特殊模式</h3>
+          <div class="difficulty-list">
+            <button class="diff-item diff-boss" data-diff="hard" data-mode="boss">
+              <span class="diff-name">👻 影子分身 · Boss 战</span>
+              <span class="diff-desc">电脑隔回合落两子；你四连即胜，它须五连</span>
+            </button>
+            <button class="diff-item diff-terrain" data-diff="hard" data-mode="terrain">
+              <span class="diff-name">🌋 地形吞噬 · 危机</span>
+              <span class="diff-desc">每 4 手外圈塌陷为熔岩，战场逐渐缩小，逼向中心决战</span>
+            </button>
+          </div>
+        </div>
+        <p id="diff-error" class="error-text"></p>
+      </div>
+    </section>
+
+    <!-- 游戏界面 -->
+    <section id="view-game" class="view">
+      <div class="game-bar">
+        <button class="back-btn" data-goto="difficulty">← 退出</button>
+        <div class="game-info">
+          <span id="game-player" class="info-pill"></span>
+          <span id="game-diff" class="info-pill"></span>
+          <span id="game-steps" class="info-pill">步数：0</span>
+          <button id="btn-mute" class="info-pill pill-btn" title="开关音效" aria-label="开关音效">🔊 音效</button>
+        </div>
+      </div>
+
+      <div id="status" class="status">你的回合，请落子</div>
+
+      <div class="game-layout">
+        <div class="board-col">
+          <div class="board-wrap">
+            <canvas id="board" width="450" height="450"></canvas>
+          </div>
+
+          <!-- 复盘回放控制条：对局结束后显示 -->
+          <div id="replay-bar" class="replay-bar" style="display:none">
+            <div class="replay-controls">
+              <button id="rp-first" class="rp-btn" title="回到开局" aria-label="回到开局">⏮</button>
+              <button id="rp-prev" class="rp-btn" title="上一手" aria-label="上一手">◀</button>
+              <button id="rp-play" class="rp-btn rp-play" title="播放 / 暂停" aria-label="播放或暂停">▶</button>
+              <button id="rp-next" class="rp-btn" title="下一手" aria-label="下一手">▶▶</button>
+              <button id="rp-last" class="rp-btn" title="跳到终局" aria-label="跳到终局">⏭</button>
+              <span id="rp-count" class="rp-count">0 / 0</span>
+              <button id="rp-exit" class="rp-btn rp-exit" title="退出复盘" aria-label="退出复盘">✕</button>
+            </div>
+            <input id="rp-range" class="rp-range" type="range" min="0" max="0" value="0" step="1" aria-label="回放进度" />
+          </div>
+
+          <div class="btn-group game-controls">
+            <button id="btn-undo" class="btn btn-ghost">悔棋</button>
+            <button id="btn-replay" class="btn btn-ghost" style="display:none">复盘</button>
+            <button id="btn-result" class="btn btn-ghost" style="display:none">查看结果</button>
+            <button id="btn-restart" class="btn btn-primary">重新开始</button>
+          </div>
+        </div>
+
+        <aside class="side-panel">
+          <!-- AI 方法论 -->
+          <div class="panel-block">
+            <h3 class="panel-title">
+              <span class="dot ai"></span>电脑思路
+            </h3>
+            <div id="ai-reason" class="ai-reason">
+              <p class="ai-tactic">等待开局</p>
+              <p class="ai-text">你先落子，我会在这里说明每一手的思路。</p>
+            </div>
+          </div>
+
+          <!-- 落子记录 -->
+          <div class="panel-block move-block">
+            <h3 class="panel-title">落子记录</h3>
+            <ol id="move-log" class="move-log"></ol>
+            <p id="move-empty" class="move-empty">尚未落子</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 排行榜 -->
+    <section id="view-leaderboard" class="view">
+      <div class="card wide-card">
+        <button class="back-btn" data-goto="home">← 返回</button>
+        <h2 class="view-title">排行榜</h2>
+        <p class="subtitle small">胜利记录 · 按步数从少到多排名</p>
+
+        <div class="filter-tabs">
+          <button class="tab active" data-filter="all">全部</button>
+          <button class="tab" data-filter="easy">简单</button>
+          <button class="tab" data-filter="medium">中等</button>
+          <button class="tab" data-filter="hard">困难</button>
+          <button class="tab" data-filter="boss">Boss</button>
+          <button class="tab" data-filter="terrain">地形</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="rank-table">
+            <thead>
+              <tr>
+                <th>排名</th>
+                <th>姓名</th>
+                <th>难度</th>
+                <th>步数</th>
+              </tr>
+            </thead>
+            <tbody id="rank-body"></tbody>
+          </table>
+          <p id="rank-empty" class="empty-text">暂无记录，快去挑战吧！</p>
+        </div>
+
+        <div class="btn-group">
+          <button id="btn-clear-rank" class="btn btn-danger">清空排行榜</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 结算弹窗 -->
+  <div id="modal" class="modal">
+    <div class="modal-card">
+      <h3 id="modal-title">游戏结束</h3>
+      <p id="modal-text"></p>
+      <div class="btn-group">
+        <button id="modal-again" class="btn btn-primary">再来一局</button>
+        <button id="modal-review" class="btn btn-ghost">查看棋局</button>
+        <button id="modal-rank" class="btn btn-ghost">查看排行榜</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/ai.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
