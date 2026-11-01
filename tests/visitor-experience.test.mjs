@@ -25,10 +25,10 @@ test('import and pure state transitions never access browser globals', () => {
   assert.equal(result.status, 0, result.stderr);
 });
 
-test('map stations use the existing six routes and ordered exhibit names', () => {
+test('map stations use the existing five routes and ordered exhibit names', () => {
   assert.deepEqual(VISITOR_STOPS.map(stop => [stop.id, stop.number, stop.name]), EXHIBITS);
   assert.ok(VISITOR_STOPS.every(stop => stop.hash === `#${stop.id}` && stop.narration && stop.prompt));
-  assert.equal(VISITOR_STOPS.length, 6);
+  assert.equal(VISITOR_STOPS.length, 5);
 });
 
 test('all three professional roles have three evidence-based stages and specific feedback', () => {
@@ -131,13 +131,13 @@ test('free visits record actual valid routes, including legacy aliases, once', (
   for (const hash of ['#history', '#model', '#labs', '#experiments']) {
     state = frozenState(reduceVisitor(state, 'visit', hash));
   }
-  assert.deepEqual(state.visited, ['origins', 'dimensions', 'experiments']);
+  assert.deepEqual(state.visited, ['origins', 'dimensions', 'growth']);
   assert.equal(state.active, false);
   assert.equal(state.index, 0);
   assert.equal(state.finished, false);
 });
 
-test('guide is entirely manual, clamps bounds and records six visited stops', () => {
+test('guide is entirely manual, clamps bounds and records five visited stops', () => {
   let state = frozenState(createVisitorState());
   assert.equal(reduceVisitor(state, 'next'), state);
   assert.equal(reduceVisitor(state, 'previous'), state);
@@ -146,17 +146,17 @@ test('guide is entirely manual, clamps bounds and records six visited stops', ()
   assert.deepEqual(state.visited, ['origins']);
   assert.equal(reduceVisitor(state, 'previous'), state);
   assert.equal(reduceVisitor(state, 'tick', 99999), state);
-  for (let index = 1; index < 6; index++) {
+  for (let index = 1; index < 5; index++) {
     state = frozenState(reduceVisitor(state, 'next'));
     assert.equal(state.index, index);
     assert.equal(state.active, true);
     assert.equal(state.finished, false);
   }
   assert.equal(reduceVisitor(state, 'next'), state);
-  assert.equal(state.visited.length, 6);
+  assert.equal(state.visited.length, 5);
   state = frozenState(reduceVisitor(state, 'previous'));
-  assert.equal(state.index, 4);
-  assert.equal(state.visited.length, 6);
+  assert.equal(state.index, 3);
+  assert.equal(state.visited.length, 5);
   state = reduceVisitor(reduceVisitor(state, 'next'), 'end');
   assert.equal(state.active, false);
   assert.equal(state.finished, true);
@@ -177,7 +177,7 @@ test('ordinary route changes during a guide never silently advance its station',
   const next = reduceVisitor(frozenState(state), 'visit', '#experiments');
   assert.equal(next.index, 0);
   assert.equal(next.active, true);
-  assert.deepEqual(next.visited, ['origins', 'experiments']);
+  assert.deepEqual(next.visited, ['origins', 'growth']);
 });
 
 test('mount reports its browser and routing requirements without global side effects', () => {

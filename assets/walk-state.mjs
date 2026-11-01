@@ -4,7 +4,6 @@ export const WALK_STATIONS=Object.freeze([
  {id:'decision',number:'02',name:'决策之核',subtitle:'策略、价值与树搜索的协作',x:-7,z:0},
  {id:'dimensions',number:'03',name:'维度解剖',subtitle:'进入张量与卷积的内部',x:7,z:0},
  {id:'growth',number:'04',name:'成长系统',subtitle:'工具、反馈与自我对弈',x:-7,z:-7},
- {id:'experiments',number:'05',name:'交互实验',subtitle:'六项数值实验与三种角色研习',x:7,z:-7},
 ]);
 
 // Short movement steps resolve each axis independently, allowing sliding beside a plinth.

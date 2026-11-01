@@ -42,16 +42,22 @@ const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('n
    await page.locator('#'+prefix+'-parts button').last().click();
    const current=await page.locator('#'+prefix+'-info').getAttribute('data-part');
    await page.locator('#'+host+' .part-hotspots').evaluate(el=>el.style.visibility='hidden');
-   const canvas=await page.locator('#'+host+' canvas').boundingBox();let rayHit=false;
-   for(const [u,v] of [[.4,.5],[.5,.5],[.3,.6],[.65,.45],[.55,.65],[.25,.45],[.7,.6],[.45,.35]]){
-    await page.mouse.click(canvas.x+canvas.width*u,canvas.y+canvas.height*v);
-    if(await page.locator('#'+prefix+'-info').getAttribute('data-part')!==current){rayHit=true;break;}
-   }
+    const canvas=await page.locator('#'+host+' canvas').boundingBox();
+    const snapshot=await page.locator('#'+host+' canvas').evaluate(canvas=>canvas.getExhibitSnapshot());
+    const target=snapshot.bounds.find(item=>item.key!==current&&item.right>item.left&&item.bottom>item.top);
+    let rayHit=false;
+    for(const candidate of snapshot.bounds.filter(item=>item.key!==current&&item.right>item.left&&item.bottom>item.top)){
+     for(const [u,v] of [[.5,.5],[.25,.5],[.75,.5],[.5,.25],[.5,.75],[.25,.25],[.75,.25],[.25,.75],[.75,.75]]){
+      await page.mouse.click(canvas.x+candidate.left+(candidate.right-candidate.left)*u,canvas.y+candidate.top+(candidate.bottom-candidate.top)*v);
+      if(await page.locator('#'+prefix+'-info').getAttribute('data-part')===candidate.key){rayHit=true;break;}
+     }
+     if(rayHit)break;
+    }
    check(mode+'直接点击三维网格生效',rayHit);
    await page.locator('#'+host+' .part-hotspots').evaluate(el=>el.style.visibility='');
    await page.locator('#'+button).click();check(mode+'恢复同步',await page.locator('#'+button).getAttribute('aria-pressed')==='false');
   }
-  await go('experiments');await page.locator('.boundary-lab').waitFor({state:'visible'});check('05实验边界保留',await page.locator('.boundary-lab').isVisible());
+   await go('growth');await page.locator('.boundary-lab').waitFor({state:'visible'});check('04成长系统包含实验边界',await page.locator('.boundary-lab').isVisible());
   await go('origins');await page.locator('#history-scene canvas').waitFor();check('00历史展品保留',await page.locator('#historical-object').isVisible());
   await page.setViewportSize({width:390,height:844});
   for(const view of ['match','growth']){

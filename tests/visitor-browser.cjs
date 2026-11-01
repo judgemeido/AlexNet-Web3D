@@ -8,7 +8,7 @@ const {pathToFileURL} = require('node:url');
 const entry = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
 const stops = [
   ['origins', '崛起前夜'], ['match', '世纪对局'], ['decision', '决策之核'],
-  ['dimensions', '维度解剖'], ['growth', '成长系统'], ['experiments', '实验与边界']
+  ['dimensions', '维度解剖'], ['growth', '成长系统']
 ];
 // Expectations are independent of the production reducer and are never injected into the page.
 const roles = [
@@ -73,7 +73,7 @@ async function checkFreshStage(page, prefix, stage, index) {
 }
 
 async function roleFlows(page, prefix) {
-  await go(page, 'experiments');
+  await go(page, 'growth');
   check(`${prefix}·三种专业角色`, await page.locator('[data-visitor-role]').count() === 3);
   check(`${prefix}·情境推演声明`, (await page.locator('.visitor-heading .visitor-boundary').textContent()).includes('不是历史人物经历'));
   check(`${prefix}·原有六关存在`, await page.locator('#lab-stages button').count() === 6);
@@ -153,7 +153,7 @@ async function roleFlows(page, prefix) {
 async function mapAndGuide(page, prefix) {
   await openMap(page);
   check(`${prefix}·原生模态dialog`, await page.locator('#visitor-map').evaluate(dialog => dialog.open && dialog.matches(':modal')));
-  check(`${prefix}·地图包含六个展区`, await page.locator('[data-visitor-stop]').count() === 6);
+  check(`${prefix}·地图包含五个展区`, await page.locator('[data-visitor-stop]').count() === 5);
   await focusIs(page, '[data-visitor-action="close"]', `${prefix}·打开地图聚焦关闭按钮`);
   await page.keyboard.press('Tab');
   await focusIs(page, '[data-visitor-stop="origins"]', `${prefix}·Tab进入地图首个按钮`);
@@ -186,7 +186,7 @@ async function mapAndGuide(page, prefix) {
     check(`${prefix}·${name}标记已访问和当前位置`, (await page.locator(`[data-visitor-stop="${id}"] .visitor-visit-label`).textContent()).includes('已访问') && await page.locator(`[data-visitor-stop="${id}"]`).getAttribute('aria-current') === 'location');
     await page.locator('[data-visitor-action="close"]').click();
   }
-  check(`${prefix}·六区访问记录`, (await page.locator('.visitor-visit-count').textContent()).trim() === '6 / 6');
+  check(`${prefix}·五区访问记录`, (await page.locator('.visitor-visit-count').textContent()).trim() === '5 / 5');
   await openMap(page);
   await page.locator('[data-visitor-action="start"]').click();
   await atStop(page, 'origins');
@@ -196,12 +196,12 @@ async function mapAndGuide(page, prefix) {
   for (const [index, [id, name]] of stops.entries()) {
     if (index > 0) { await page.locator('.visitor-guide [data-visitor-action="next"]').click(); await atStop(page, id); }
     check(`${prefix}·讲解${index + 1}站标题`, (await page.locator('.visitor-guide-title').textContent()).startsWith(`${name} ·`));
-    check(`${prefix}·讲解${index + 1}站序号`, (await page.locator('.visitor-guide-head .visitor-kicker').textContent()).includes(`${index + 1} / 6`));
+    check(`${prefix}·讲解${index + 1}站序号`, (await page.locator('.visitor-guide-head .visitor-kicker').textContent()).includes(`${index + 1} / 5`));
     check(`${prefix}·讲解${index + 1}站内容与问题`, (await page.locator('.visitor-guide > .visitor-copy').textContent()).length > 30 && (await page.locator('.visitor-prompt').textContent()).length > 15);
     if (index === 1) {
       await page.locator('.visitor-guide [data-visitor-action="previous"]').click();
       await atStop(page, 'origins');
-      check(`${prefix}·讲解能后退并保留访问记录`, (await page.locator('.visitor-guide-head .visitor-kicker').textContent()).includes('1 / 6') && (await page.locator('.visitor-visit-count').textContent()).trim() === '6 / 6');
+      check(`${prefix}·讲解能后退并保留访问记录`, (await page.locator('.visitor-guide-head .visitor-kicker').textContent()).includes('1 / 5') && (await page.locator('.visitor-visit-count').textContent()).trim() === '5 / 5');
       await page.locator('.visitor-guide [data-visitor-action="next"]').click();
       await atStop(page, 'match');
     }
@@ -211,17 +211,17 @@ async function mapAndGuide(page, prefix) {
   check(`${prefix}·结束隐藏讲解`, !(await page.locator('.visitor-guide').isVisible()));
   await focusIs(page, '.visitor-map-trigger', `${prefix}·结束讲解恢复全站按钮焦点`);
   await openMap(page);
-  check(`${prefix}·明确记录六站完成`, (await page.locator('.visitor-map-status').textContent()).includes('六站讲解已完成'));
+  check(`${prefix}·明确记录五站完成`, (await page.locator('.visitor-map-status').textContent()).includes('五站讲解已完成'));
   await page.locator('[data-visitor-action="start"]').click();
   await atStop(page, 'origins');
   await page.locator('.visitor-guide-head [data-visitor-action="end"]').click();
   await openMap(page);
-  check(`${prefix}·提前结束不冒充全程完成`, !(await page.locator('.visitor-map-status').textContent()).includes('六站讲解已完成') && (await page.locator('.visitor-map-status').textContent()).includes('6 / 6'));
+  check(`${prefix}·提前结束不冒充全程完成`, !(await page.locator('.visitor-map-status').textContent()).includes('五站讲解已完成') && (await page.locator('.visitor-map-status').textContent()).includes('5 / 5'));
   await page.locator('[data-visitor-action="close"]').click();
 
   await page.reload();
   await page.locator('.visitor-map-trigger').waitFor();
-  check(`${prefix}·刷新保留已访问记录`, (await page.locator('.visitor-visit-count').textContent()).trim() === '6 / 6');
+  check(`${prefix}·刷新保留已访问记录`, (await page.locator('.visitor-visit-count').textContent()).trim() === '5 / 5');
 }
 
 async function phoneLayout(page) {
@@ -236,8 +236,8 @@ async function phoneLayout(page) {
       const rect = dialog.getBoundingClientRect();
       return rect.left >= 0 && rect.right <= innerWidth && rect.top >= 0 && rect.bottom <= innerHeight && dialog.scrollWidth <= dialog.clientWidth;
     }));
-    await page.locator('[data-visitor-stop="experiments"]').click();
-    await atStop(page, 'experiments');
+    await page.locator('[data-visitor-stop="growth"]').click();
+    await atStop(page, 'growth');
     await page.locator('[data-visitor-role="engineer"]').click();
     await page.locator('[data-visitor-task="restart"]').click();
     await page.locator('[data-visitor-task="inspect"]').click();

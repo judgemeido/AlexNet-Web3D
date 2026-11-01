@@ -11,7 +11,7 @@ const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('n
  try{
   await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href+'#match');await page.locator('#museum-walk-open').waitFor();await open();
   check('三维展馆原生对话框打开',await page.locator('#museum-walk').evaluate(d=>d.open));
-  const start=await state();check('六座实体展台与Comfy雕塑已载入',start.stations===6&&start.sculpture&&start.triangles>1000);
+   const start=await state();check('五座实体展台与Comfy雕塑已载入',start.stations===5&&start.sculpture&&start.triangles>1000);
   await page.screenshot({path:path.resolve(__dirname,'../output/walk-desktop.png')});
   await page.locator('#museum-walk canvas').focus();await page.keyboard.down('w');
   await page.waitForFunction(z=>document.querySelector('#museum-walk canvas').getWalkSnapshot().position.z<z-1,start.position.z);await page.keyboard.up('w');
@@ -23,7 +23,7 @@ const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('n
   await open();const portal=(await state()).portals.find(s=>s.id==='dimensions');
   await page.mouse.click(portal.x,portal.y);await page.locator('#dimensions-view').waitFor({state:'visible'});
   check('直接点击三维展台标牌进入展区',await page.locator('#museum-walk').evaluate(d=>!d.open)&&await page.evaluate(()=>location.hash==='#dimensions'));
-  for(const id of ['origins','match','decision','dimensions','growth','experiments']){
+   for(const id of ['origins','match','decision','dimensions','growth']){
    await open();await page.locator(`[data-walk-station="${id}"]`).click();await page.locator('#'+id+'-view').waitFor({state:'visible'});
    check('大厅进入展区 '+id,await page.locator('#museum-walk').evaluate(d=>!d.open)&&await page.evaluate(id=>location.hash==='#'+id,id));
   }

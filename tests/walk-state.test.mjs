@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {walkPosition,WALK_STATIONS} from '../assets/walk-state.mjs';
 import {EXHIBITS} from '../assets/museum-data.mjs';
 
-test('walk stations link all six real exhibits',()=>assert.deepEqual(WALK_STATIONS.map(s=>s.id),EXHIBITS.map(s=>s[0])));
+test('walk stations link all five real exhibits',()=>assert.deepEqual(WALK_STATIONS.map(s=>s.id),EXHIBITS.map(s=>s[0])));
 test('movement can traverse both sides of the central sculpture without entering it',()=>{
  for(const side of [-1,1]){
   let p={x:0,z:11};

@@ -7,7 +7,7 @@ const $=s=>document.querySelector(s);
 export function setupPages({onModel,inspect}){
  const museum=mountMuseum();
  let view=routeMuseum(location.hash),state=createLab(),channel='all',scan=0,showHint=false,pendingLayer=null;
- function switchView(){view=routeMuseum(location.hash);for(const [name] of EXHIBITS){document.getElementById(name+'-view').hidden=name!==view;const link=document.getElementById('nav-'+name);if(name===view)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');}museum.show(view);onModel(view==='dimensions');if(view==='dimensions'&&pendingLayer!==null){inspect(pendingLayer);pendingLayer=null;}if(view==='experiments')renderLab();window.scrollTo({top:0,behavior:'instant'});}
+ function switchView(){view=routeMuseum(location.hash);for(const [name] of EXHIBITS){document.getElementById(name+'-view').hidden=name!==view;const link=document.getElementById('nav-'+name);if(name===view)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');}museum.show(view);onModel(view==='dimensions');if(view==='dimensions'&&pendingLayer!==null){inspect(pendingLayer);pendingLayer=null;}if(view==='growth')renderLab();window.scrollTo({top:0,behavior:'instant'});}
  window.addEventListener('hashchange',switchView);
  document.querySelectorAll('.main-nav a').forEach((a,i,all)=>a.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();let j=e.key==='Home'?0:e.key==='End'?all.length-1:(i+(e.key==='ArrowRight'?1:all.length-1))%all.length;all[j].focus();location.hash=all[j].hash;}));
  function send(event,value){state=act(state,event,value);renderLab();}

@@ -41,7 +41,7 @@ export const ROLE_MISSIONS = freeze([
         ]
       },
       {
-        title: '签署研究结论', route: 'experiments',
+        title: '签署研究结论', route: 'growth',
         situation: '研究笔记显示：刚才的单样本损失下降；尚未进行独立对局测试，也没有完整围棋规则引擎。',
         action: '审阅证据清单',
         evidence: '已验证：单权重更新与局部损失变化。未验证：合法落子、提子、整盘胜负、泛化表现。没有加载历史系统的训练权重。',
@@ -148,7 +148,7 @@ const narratives = [
   ['从候选走到决策', '策略提出相对倾向，价值估计局面，搜索把有限预算分配到分支。手动执行选择、扩展、评估与回传，检查哪一刻统计发生变化。', '观察：最高先验是否始终等于搜索后的首选？估计为何仍不是胜负保证？'],
   ['把状态拆成平面', '对照图像颜色通道与棋盘状态编码。二者共享张量语言，但输入语义、任务目标和网络输出不同。原图像网络仍是独立示例。', '操作：切换棋盘编码、调整切片；留意简化三平面与完整历史编码的边界。'],
   ['区分计算与学习', '拆看加速计算、反馈更新与自我对弈。硬件改变执行条件，训练调整参数，自我对弈生成经验；三者需要不同的验证方法。', '观察：局部误差下降证明了什么？2016 年与后续零起点研究有哪些流程差异？'],
-  ['用操作形成自己的结论', '原有六项数值实验继续独立运行。下方角色任务让你核查数据、计算或复盘证据，把观察转为可说明依据的判断。', '操作：完成一个三阶段角色任务，并读完复盘。教学数据不等于真实历史推理。']
+  ['用操作形成自己的结论', '六项数值实验、角色任务和复盘档案现在汇入成长系统的最后一层。你可以核查数据、计算或复盘证据，把观察转为可说明依据的判断。', '操作：完成一个三阶段角色任务，并读完复盘。教学数据不等于真实历史推理。']
 ];
 export const VISITOR_STOPS = freeze(EXHIBITS.map(([id, number, name], index) => ({
   id, number, name, hash: `#${id}`, title: narratives[index][0],
@@ -195,7 +195,7 @@ export function roleReview(state) {
       attempts: state.records.filter(record => record.stage === index).length}))};
 }
 
-const aliases = {history: 'origins', model: 'dimensions', labs: 'experiments'};
+const aliases = {history: 'origins', model: 'dimensions', labs: 'growth', experiments: 'growth'};
 function stopIndex(hash) {
   if (typeof hash !== 'string') return -1;
   const key = hash.replace(/^#/, '');
@@ -241,7 +241,7 @@ export function mountVisitorExperience({scene, navigate} = {}) {
   if (mounts.has(doc)) return mounts.get(doc);
   const win = doc.defaultView;
   const host = doc.querySelector('#experiments-view');
-  if (!host || !doc.body) throw new Error('请在六展区初始化后挂载：缺少 #experiments-view');
+  if (!host || !doc.body) throw new Error('请在五展区初始化后挂载：缺少 #experiments-view');
   let stored = [];
   try { stored = JSON.parse(win.localStorage.getItem(STORAGE_KEY) || '[]'); } catch { /* Private/file mode remains usable. */ }
   let visitor = createVisitorState(stored), roleId = 'researcher', destroyed = false, returnFocus = null;
@@ -269,7 +269,7 @@ export function mountVisitorExperience({scene, navigate} = {}) {
   dialog.className = 'visitor-dialog';
   dialog.setAttribute('aria-labelledby', 'visitor-map-title');
   dialog.setAttribute('aria-describedby', 'visitor-map-intro');
-  dialog.innerHTML = `<div class="visitor-dialog-head"><span class="visitor-kicker">六区展陈 / 自由参观</span><button type="button" class="visitor-close" data-visitor-action="close" aria-label="关闭参观地图" autofocus>关闭 ×</button></div><h2 class="visitor-title" id="visitor-map-title">把线索，连成自己的路径。</h2><p class="visitor-copy" id="visitor-map-intro">自由选择任一展区，或从第一站开始手动讲解。已访问标记在本浏览器可用存储中保留；讲解只在你操作时前进。</p><div class="visitor-map-grid"></div><div class="visitor-map-footer"><span class="visitor-map-status"></span><button type="button" class="visitor-primary" data-visitor-action="start">开始六站讲解 →</button></div>`;
+   dialog.innerHTML = `<div class="visitor-dialog-head"><span class="visitor-kicker">五区展陈 / 自由参观</span><button type="button" class="visitor-close" data-visitor-action="close" aria-label="关闭参观地图" autofocus>关闭 ×</button></div><h2 class="visitor-title" id="visitor-map-title">把线索，连成自己的路径。</h2><p class="visitor-copy" id="visitor-map-intro">自由选择任一展区，或从第一站开始手动讲解。已访问标记在本浏览器可用存储中保留；讲解只在你操作时前进。</p><div class="visitor-map-grid"></div><div class="visitor-map-footer"><span class="visitor-map-status"></span><button type="button" class="visitor-primary" data-visitor-action="start">开始五站讲解 →</button></div>`;
   doc.body.append(dialog);
   const mapGrid = dialog.querySelector('.visitor-map-grid');
   const status = dialog.querySelector('.visitor-map-status');
@@ -284,15 +284,16 @@ export function mountVisitorExperience({scene, navigate} = {}) {
     const current = stopIndex(win.location.hash);
     const markup = VISITOR_STOPS.map((stop, index) => `<button type="button" class="visitor-map-card" data-visitor-stop="${stop.id}" ${index === current ? 'aria-current="location"' : ''}><span class="visitor-stop-number">${stop.number}</span><span class="visitor-stop-name">${stop.name}</span><span class="visitor-copy">${stop.title}</span><span class="visitor-visit-label">${visitor.visited.includes(stop.id) ? '已访问' : '待参观'}${index === current ? ' · 当前展区' : ''}</span></button>`).join('');
     if (markup !== mapMarkup) { mapGrid.innerHTML = markup; mapMarkup = markup; }
-    tools.querySelector('.visitor-visit-count').textContent = `${visitor.visited.length} / 6`;
-    status.textContent = `已访问 ${visitor.visited.length} / 6 展区${visitor.finished ? ' · 六站讲解已完成' : ''}`;
+     tools.querySelector('.visitor-visit-count').textContent = `${visitor.visited.length} / 5`;
+     status.textContent = `已访问 ${visitor.visited.length} / 5 展区${visitor.finished ? ' · 五站讲解已完成' : ''}`;
   }
   function refreshGuide() {
     guide.hidden = !visitor.active;
     if (!visitor.active) { guide.replaceChildren(); guideMarkup = ''; return; }
     const stop = VISITOR_STOPS[visitor.index];
     const elsewhere = stopIndex(win.location.hash) !== visitor.index;
-    const markup = `<div class="visitor-guide-head"><span class="visitor-kicker">手动讲解 · ${visitor.index + 1} / 6</span><button type="button" class="visitor-text-button" data-visitor-action="end">${visitor.index === 5 ? '结束讲解' : '提前结束'}</button></div><h2 class="visitor-guide-title" tabindex="-1">${stop.name} · ${stop.title}</h2><p class="visitor-copy">${stop.narration}</p><p class="visitor-prompt">${stop.prompt}</p><div class="visitor-guide-actions"><button type="button" class="visitor-secondary" data-visitor-action="previous" ${visitor.index === 0 ? 'disabled' : ''}>← 上一站</button>${elsewhere ? '<button type="button" class="visitor-secondary" data-visitor-action="return">返回讲解展区</button>' : ''}<button type="button" class="visitor-primary" data-visitor-action="${visitor.index === 5 ? 'end' : 'next'}">${visitor.index === 5 ? '完成并结束' : '下一站 →'}</button>${visitor.index === 1 && typeof scene?.select === 'function' && !elsewhere ? '<button type="button" class="visitor-text-button" data-visitor-action="highlight">在模型中标注棋盘入口</button>' : ''}</div>`;
+     const lastIndex = VISITOR_STOPS.length - 1;
+     const markup = `<div class="visitor-guide-head"><span class="visitor-kicker">手动讲解 · ${visitor.index + 1} / ${VISITOR_STOPS.length}</span><button type="button" class="visitor-text-button" data-visitor-action="end">${visitor.index === lastIndex ? '结束讲解' : '提前结束'}</button></div><h2 class="visitor-guide-title" tabindex="-1">${stop.name} · ${stop.title}</h2><p class="visitor-copy">${stop.narration}</p><p class="visitor-prompt">${stop.prompt}</p><div class="visitor-guide-actions"><button type="button" class="visitor-secondary" data-visitor-action="previous" ${visitor.index === 0 ? 'disabled' : ''}>← 上一站</button>${elsewhere ? '<button type="button" class="visitor-secondary" data-visitor-action="return">返回讲解展区</button>' : ''}<button type="button" class="visitor-primary" data-visitor-action="${visitor.index === lastIndex ? 'end' : 'next'}">${visitor.index === lastIndex ? '完成并结束' : '下一站 →'}</button>${visitor.index === 1 && typeof scene?.select === 'function' && !elsewhere ? '<button type="button" class="visitor-text-button" data-visitor-action="highlight">在模型中标注棋盘入口</button>' : ''}</div>`;
     if (markup !== guideMarkup) {
       const hadFocus = guide.contains(doc.activeElement);
       guide.innerHTML = markup; guideMarkup = markup;
@@ -317,7 +318,7 @@ export function mountVisitorExperience({scene, navigate} = {}) {
   function runGuide(action) {
     visitor = reduceVisitor(visitor, action);
     if (action === 'end') {
-      announcement.textContent = visitor.finished ? '六站讲解已完成。可继续自由参观或进入角色研习。' : '讲解已结束，已访问记录保留。可继续自由参观。';
+       announcement.textContent = visitor.finished ? '五站讲解已完成。可继续自由参观或进入角色研习。' : '讲解已结束，已访问记录保留。可继续自由参观。';
       refreshMap(); refreshGuide(); focus(trigger); return;
     }
     announcement.textContent = '';
