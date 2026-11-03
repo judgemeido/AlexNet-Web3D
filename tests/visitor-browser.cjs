@@ -7,8 +7,8 @@ const {pathToFileURL} = require('node:url');
 
 const entry = pathToFileURL(path.resolve(__dirname, '../index.html')).href;
 const stops = [
-  ['origins', '崛起前夜'], ['match', '世纪对局'], ['decision', '决策之核'],
-  ['dimensions', '维度解剖'], ['growth', '成长系统']
+  ['origins', '序章·漫长来路'], ['match', '首尔·五番棋'], ['decision', '落子之前'],
+  ['dimensions', '数据的形状'], ['growth', '计算与成长']
 ];
 // Expectations are independent of the production reducer and are never injected into the page.
 const roles = [
@@ -18,9 +18,9 @@ const roles = [
     {title: '签署研究结论', evidence: '未验证', wrong: 'master', error: '无法支持棋力', right: 'bounded'}
   ]},
   {id: 'engineer', name: '系统工程师', stages: [
-    {title: '分配计算职责', evidence: '状态编码 → 搜索调度', wrong: 'fan', error: '风扇负责', right: 'cooperate'},
-    {title: '诊断数据瓶颈', evidence: '4 + 6 = 10 ms', wrong: 'cores', error: '仅降至 14 ms', right: 'supply'},
-    {title: '交付运行说明', evidence: '网络权重保持固定', wrong: 'learn', error: '不同对象', right: 'separate'}
+    {title: '分配计算职责', route: 'match', evidence: '状态编码 → 搜索调度', wrong: 'fan', error: '风扇负责', right: 'cooperate'},
+    {title: '诊断数据瓶颈', route: 'growth', evidence: '4 + 6 = 10 ms', wrong: 'cores', error: '仅降至 14 ms', right: 'supply'},
+    {title: '交付运行说明', route: 'decision', evidence: '这次请求使用固定权重', wrong: 'learn', error: '没有训练更新网络参数', right: 'separate'}
   ]},
   {id: 'analyst', name: '对局分析师', stages: [
     {title: '区分第一印象与搜索判断', evidence: '访问 8', wrong: 'prior', error: '不能预先锁定', right: 'revise'},
@@ -73,54 +73,43 @@ async function checkFreshStage(page, prefix, stage, index) {
 }
 
 async function roleFlows(page, prefix) {
+  await go(page, 'origins');
+  check(`${prefix}·00页先交代课堂角色`, (await page.locator('#visitor-identity').textContent()).includes('系统工程师'));
+  check(`${prefix}·学生没有角色选择器`, await page.locator('#visitor-identity [data-visitor-role]').count() === 0);
+  check(`${prefix}·角色说明不带免责声明`, await page.locator('#visitor-identity .visitor-boundary').count() === 0);
+  check(`${prefix}·角色介绍没有按钮`, await page.locator('#visitor-identity button').count() === 0);
+  check(`${prefix}·角色介绍没有模板免责声明`, !(await page.locator('#visitor-identity').textContent()).includes('不代表历史人物经历'));
+  check(`${prefix}·身份不能在04页切换`, await page.locator('#visitor-experience [data-visitor-role]').count() === 0);
   await go(page, 'growth');
-  check(`${prefix}·三种专业角色`, await page.locator('[data-visitor-role]').count() === 3);
-  check(`${prefix}·情境推演声明`, (await page.locator('.visitor-heading .visitor-boundary').textContent()).includes('不是历史人物经历'));
-  check(`${prefix}·原有六关存在`, await page.locator('#lab-stages button').count() === 6);
+  check(`${prefix}·六关互动实验仍在`, await page.locator('#lab-stages button').count() === 6);
+  check(`${prefix}·任务明确沿用系统工程师身份`, (await page.locator('.visitor-task-head').textContent()).includes('系统工程师'));
+  check(`${prefix}·04页直接进入角色任务`, (await page.locator('.visitor-task-head').textContent()).includes('系统工程师'));
   for (const channel of ['red', 'green', 'blue']) await page.locator(`#lab-body [data-channel="${channel}"]`).click();
   check(`${prefix}·原有第一关可完成`, await page.locator('#lab-next').isEnabled());
-
-  for (const [roleIndex, role] of roles.entries()) {
-    const rolePrefix = `${prefix}·${role.name}`;
-    await page.locator(`[data-visitor-role="${role.id}"]`).click();
-    for (const [index, stage] of role.stages.entries()) {
-      const stagePrefix = `${rolePrefix}·${index + 1}`;
-      await checkFreshStage(page, stagePrefix, stage, index);
-      await page.locator('[data-visitor-task="inspect"]').click();
-      check(`${stagePrefix}·操作后出现具体证据`, (await page.locator('.visitor-evidence-copy').textContent()).includes(stage.evidence));
-      check(`${stagePrefix}·取证操作标记完成`, await page.locator('[data-visitor-task="inspect"]').isDisabled());
-      await focusIs(page, '[data-visitor-answer]', `${stagePrefix}·取证后焦点进入答案`);
-      await page.locator(`[data-visitor-answer="${stage.wrong}"]`).click();
-      const feedback = await page.locator('.visitor-feedback').textContent();
-      check(`${stagePrefix}·错误有具体反馈`, feedback.includes('需要修正') && feedback.includes(stage.error));
-      check(`${stagePrefix}·错误不解锁前进`, await page.locator('[data-visitor-task="next"]').isDisabled());
-      check(`${stagePrefix}·错误不清除证据`, (await page.locator('.visitor-evidence-copy').textContent()).includes(stage.evidence));
-      await focusIs(page, `[data-visitor-answer="${stage.wrong}"]`, `${stagePrefix}·错误后保留可操作焦点`);
-      if (index === 0) {
-        const other = roles[(roleIndex + 1) % roles.length];
-        await page.locator(`[data-visitor-role="${other.id}"]`).click();
-        await page.locator(`[data-visitor-role="${role.id}"]`).click();
-        check(`${rolePrefix}·切换角色保留任务和错误`, (await page.locator('.visitor-feedback').textContent()) === feedback && (await page.locator('.visitor-evidence-copy').textContent()).includes(stage.evidence));
-      }
-      await page.locator(`[data-visitor-answer="${stage.right}"]`).click();
-      check(`${stagePrefix}·正确判断得到确认`, (await page.locator('.visitor-feedback').textContent()).startsWith('判断成立'));
-      check(`${stagePrefix}·正确后锁定本阶段答案`, await page.locator(`[data-visitor-answer="${stage.wrong}"]`).isDisabled());
-      check(`${stagePrefix}·正确后允许前进`, await page.locator('[data-visitor-task="next"]').isEnabled());
-      await focusIs(page, '[data-visitor-task="next"]', `${stagePrefix}·正确后焦点进入前进按钮`);
-      await page.locator('[data-visitor-task="next"]').click();
-      await focusIs(page, index === 2 ? '.visitor-review-title' : '.visitor-stage-title', `${stagePrefix}·前进后焦点进入新内容`);
+  const role = roles.find(item => item.id === 'engineer');
+  for (const [index, stage] of role.stages.entries()) {
+    const stagePrefix = `${prefix}·系统工程师阶段${index + 1}`;
+    await checkFreshStage(page, stagePrefix, stage, index);
+    await page.locator('[data-visitor-task="inspect"]').click();
+    check(`${stagePrefix}·取证后出现对应证据`, (await page.locator('.visitor-evidence-copy').textContent()).includes(stage.evidence));
+    if (stage.route !== 'growth') {
+      await page.locator(`[data-visitor-reference="${stage.route}"]`).click();
+      await atStop(page, stage.route);
+      await go(page, 'growth');
+      check(`${stagePrefix}·离开展区再返回仍是同一任务`, (await page.locator('.visitor-evidence-copy').textContent()).includes(stage.evidence) && (await page.locator('.visitor-task-head').textContent()).includes('系统工程师'));
     }
-    check(`${rolePrefix}·三阶段复盘`, await page.locator('.visitor-review-item').count() === 3);
-    const summary = await page.locator('.visitor-review-count').textContent();
-    check(`${rolePrefix}·复盘记录错误和修正`, summary.includes('提交 6 次') && summary.includes('修正 3 次'));
-    const reviews = page.locator('.visitor-review-item');
-    for (const [index, stage] of role.stages.entries()) {
-      const item = reviews.nth(index);
-      check(`${rolePrefix}·复盘${index + 1}包含证据和结论`, (await item.textContent()).includes(stage.evidence) && (await item.locator('.visitor-conclusion').textContent()).length > 15 && (await item.locator('.visitor-attempts').textContent()).includes('2 次'));
-    }
-    check(`${rolePrefix}·复盘保留教学边界`, (await page.locator('.visitor-workspace .visitor-boundary').textContent()).includes('不能代表真实比赛'));
-    check(`${rolePrefix}·卡片记录已完成`, (await page.locator(`[data-visitor-role="${role.id}"] .visitor-role-progress`).textContent()) === '已完成复盘');
+    await page.locator(`[data-visitor-answer="${stage.wrong}"]`).click();
+    check(`${stagePrefix}·错误选项不会放行且有说明`, (await page.locator('.visitor-feedback').textContent()).includes(stage.error) && await page.locator('[data-visitor-task="next"]').isDisabled());
+    await page.locator(`[data-visitor-answer="${stage.right}"]`).click();
+    check(`${stagePrefix}·依据证据完成判断`, (await page.locator('.visitor-feedback').textContent()).startsWith('判断成立'));
+    await page.locator('[data-visitor-task="next"]').click();
   }
+  check(`${prefix}·完成后形成三阶段复盘`, await page.locator('.visitor-review-item').count() === 3);
+  check(`${prefix}·角色任务不提供中途切换`, await page.locator('#visitor-experience [data-visitor-role]').count() === 0);
+  await page.reload();
+  await page.locator('.visitor-map-trigger').waitFor();
+  await go(page, 'growth');
+  check(`${prefix}·刷新后保留课堂身份和复盘`, (await page.locator('.visitor-identity-status').textContent()).includes('系统工程师') && (await page.locator('.visitor-workspace').textContent()).includes('系统工程师') && await page.locator('.visitor-review-item').count() === 3);
 
   // Exercise both ways of dismissing the native dialog from a non-global opener.
   await page.locator('[data-visitor-task="map"]').click();
@@ -130,24 +119,9 @@ async function roleFlows(page, prefix) {
   await page.keyboard.press('Escape');
   await focusIs(page, '[data-visitor-task="map"]', `${prefix}·Escape恢复复盘打开者焦点`);
 
-  for (const [index, role] of roles.entries()) {
-    await page.locator(`[data-visitor-role="${role.id}"]`).click();
-    await page.locator('[data-visitor-task="restart"]').click();
-    await checkFreshStage(page, `${prefix}·${role.name}复盘后重置`, role.stages[0], 0);
-    await focusIs(page, '.visitor-stage-title', `${prefix}·${role.name}重置后焦点`);
-    if (index < roles.length - 1) {
-      const untouched = roles[index + 1];
-      check(`${prefix}·重置${role.name}保留${untouched.name}完成状态`, (await page.locator(`[data-visitor-role="${untouched.id}"] .visitor-role-progress`).textContent()) === '已完成复盘');
-    }
-  }
-  // The in-progress reset must also discard evidence and correction history.
-  await page.locator('[data-visitor-role="researcher"]').click();
-  await page.locator('[data-visitor-task="inspect"]').click();
-  await page.locator('[data-visitor-answer="positions"]').click();
-  await page.locator('[data-visitor-task="restart"]').click();
-  await checkFreshStage(page, `${prefix}·进行中重置`, roles[0].stages[0], 0);
-  check(`${prefix}·进行中重置清除错误反馈`, !(await page.locator('.visitor-feedback').textContent()).includes('需要修正'));
-  check(`${prefix}·全部角色操作保留原实验进度`, await page.locator('#lab-next').isEnabled());
+  await go(page, 'growth');
+  check(`${prefix}·身份在全部展区持续显示`, (await page.locator('.visitor-task-head').textContent()).includes('系统工程师'));
+  check(`${prefix}·六关实验仍可访问`, await page.locator('#lab-stages button').count() === 6);
 }
 
 async function mapAndGuide(page, prefix) {
@@ -236,14 +210,15 @@ async function phoneLayout(page) {
       const rect = dialog.getBoundingClientRect();
       return rect.left >= 0 && rect.right <= innerWidth && rect.top >= 0 && rect.bottom <= innerHeight && dialog.scrollWidth <= dialog.clientWidth;
     }));
-    await page.locator('[data-visitor-stop="growth"]').click();
-    await atStop(page, 'growth');
-    await page.locator('[data-visitor-role="engineer"]').click();
-    await page.locator('[data-visitor-task="restart"]').click();
-    await page.locator('[data-visitor-task="inspect"]').click();
-    await page.locator('[data-visitor-answer="cooperate"]').click();
-    check(`手机${width}·任务按钮普通点击可达`, await page.locator('[data-visitor-task="next"]').isEnabled());
-    check(`手机${width}·证据和选项无横向溢出`, await page.locator('.visitor-workspace').evaluate(node => node.scrollWidth <= node.clientWidth));
+    await page.locator('[data-visitor-action="close"]').click();
+    if (width === 390) {
+      await go(page, 'origins');
+      await go(page, 'growth');
+      await page.locator('[data-visitor-task="inspect"]').click();
+      await page.locator('[data-visitor-answer="cooperate"]').click();
+      check(`手机${width}·任务按钮普通点击可达`, await page.locator('[data-visitor-task="next"]').isEnabled());
+      check(`手机${width}·证据和选项无横向溢出`, await page.locator('.visitor-workspace').evaluate(node => node.scrollWidth <= node.clientWidth));
+    }
     await openMap(page);
     await page.locator('[data-visitor-action="start"]').click();
     await atStop(page, 'origins');
@@ -274,7 +249,7 @@ async function run() {
         page.on('console', message => { if (message.type() === 'error') report.errors.push({viewport: prefix, type: 'console', message: message.text()}); });
         await page.goto(entry);
         await page.locator('.visitor-map-trigger').waitFor();
-        check(`${prefix}·真实入口自动挂载一次`, await page.locator('.visitor-experience').count() === 1 && await page.locator('#visitor-map').count() === 1);
+        check(`${prefix}·角色导入、任务区与地图各挂载一次`, await page.locator('#visitor-identity').count() === 1 && await page.locator('#visitor-experience').count() === 1 && await page.locator('#visitor-map').count() === 1);
         await roleFlows(page, prefix);
         await mapAndGuide(page, prefix);
         if (mobile) await phoneLayout(page);

@@ -90,7 +90,7 @@ export function createExhibitLayout() {
     return layout;
   }
 
-  function distance(camera, isolated) {
+  function distance(camera, isolated, padding = 8) {
     camera.updateMatrixWorld();
     right.setFromMatrixColumn(camera.matrixWorld, 0).normalize();
     up.setFromMatrixColumn(camera.matrixWorld, 1).normalize();
@@ -118,7 +118,7 @@ export function createExhibitLayout() {
     const width = maxRight - minRight;
     const height = maxUp - minUp;
     const fit = Math.max(width / (2 * Math.tan(halfHorizontal)), height / (2 * Math.tan(halfVertical)), maxDepth * .72);
-    return fit * (isolated ? 1.22 : 1.25) + (isolated ? 2.4 : 8);
+    return fit * (isolated ? 1.22 : 1.25) + (isolated ? 2.4 : padding);
   }
 
   function projection(camera, width, height) {

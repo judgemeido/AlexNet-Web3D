@@ -1,4 +1,4 @@
-export const EXHIBITS=[['origins','00','崛起前夜'],['match','01','世纪对局'],['decision','02','决策之核'],['dimensions','03','维度解剖'],['growth','04','成长系统']];
+export const EXHIBITS=[['origins','00','序章·漫长来路'],['match','01','首尔·五番棋'],['decision','02','落子之前'],['dimensions','03','数据的形状'],['growth','04','计算与成长']];
 export function routeMuseum(hash){const s=hash.replace(/^#/,'');return ({history:'origins',model:'dimensions',labs:'growth',experiments:'growth'})[s]|| (EXHIBITS.some(e=>e[0]===s)?s:'origins');}
 export const MATCH={year:2016,result:'4 : 1',games:[{date:'3月9日',winner:'阿尔法围棋',note:'第一局：突破预期，机器赢得首局。'},{date:'3月10日',winner:'阿尔法围棋',note:'第二局：第37手引发广泛讨论。'},{date:'3月12日',winner:'阿尔法围棋',note:'第三局：取得比赛胜利，余下对局继续。'},{date:'3月13日',winner:'李世石',note:'第四局：李世石第78手成为关键转折，赢得一局。'},{date:'3月15日',winner:'阿尔法围棋',note:'第五局：最终总比分4比1。'}]};
 export const BOARD_POINTS=[[3,3,0],[15,15,1],[3,15,0],[15,3,1],[9,3,0],[9,15,1],[4,9,0],[14,9,1],[6,5,0],[6,6,1],[7,5,0],[8,6,1],[11,12,0],[12,12,1],[11,13,0],[13,13,1],[10,9,0],[9,9,1],[10,10,0],[8,10,1],[5,14,0],[14,5,1],[12,4,0],[4,13,1]];

@@ -95,10 +95,25 @@ export function createMuseumScene(onPick){
    originals.forEach(material=>material.dispose());
    camera.position.set(...(mode==='match'?[12,10,18]:[9,8,12]));controls.target.set(0,0,0);
   }else if(mode==='training')buildTraining();else if(['neuron','rules','search','learning'].includes(mode))historical=buildHistoricalModel(mode,{scene,component,box,sphere,cylinder,line,wire,detailBoard,mat,gs,camera,controls});else buildSelf();
+  if(['neuron','rules','search','learning'].includes(mode)){
+   const frontView=new T.Vector3(.16,.3,-.94).normalize();
+   camera.position.copy(controls.target).addScaledVector(frontView,12);
+   camera.lookAt(controls.target);camera.updateMatrixWorld();
+  }
   parts.forEach((part,index)=>{part.userData.base=part.position.clone();part.userData.offset=new T.Vector3(0,(index-1)*.45,0);});
   auxiliary=scene.children.filter(object=>!object.isLight&&object!==stageObject&&!parts.includes(object)&&object!==boardGroup);
   const layoutGroups=PART_CATALOG[mode]?.map(part=>groupFor(part.key)).filter(Boolean)||[];
-  layoutController.measure(layoutGroups);homePosition.copy(camera.position);homeTarget.copy(controls.target);camera.zoom=1;camera.updateProjectionMatrix();controls.maxDistance=120;controls.update();spread=targetSpread=0;fitView=false;
+  layoutController.measure(layoutGroups);
+  if(['neuron','rules','search','learning'].includes(mode)){
+   const viewBounds=new T.Box3();layoutGroups.forEach(group=>viewBounds.expandByObject(group));
+   const viewOffset=viewBounds.getCenter(new T.Vector3()).sub(controls.target);
+   controls.target.add(viewOffset);camera.position.add(viewOffset);
+   cameraDirection.copy(camera.position).sub(controls.target).normalize();
+   const framing=mode==='neuron'?1.13:.84;
+   camera.position.copy(controls.target).addScaledVector(cameraDirection,layoutController.distance(camera,null,1.5)*framing);
+   camera.lookAt(controls.target);camera.updateMatrixWorld();
+  }
+  homePosition.copy(camera.position);homeTarget.copy(controls.target);camera.zoom=1;camera.updateProjectionMatrix();controls.maxDistance=120;controls.update();spread=targetSpread=0;fitView=false;
   pulse.forEach(p=>p.visible=false);
   motion=createExhibitMotion({scene,parts:parts.concat(boardGroup?[boardGroup]:[]),mode,reduced,gs,ms,history:historical||{rotors:imported?.userData.rotors||[]},clips:imported?.animations||[]});
   wasInactive=true;
@@ -112,7 +127,7 @@ export function createMuseumScene(onPick){
   motionButton.onclick=()=>{motion.clock.toggle();sync();};motionButton.disabled=reduced;
   motionBar.append(tag,motionLabel,motionButton);container.appendChild(motionBar);sync();
  }
- function size(){if(!container||!active)return;const width=container.clientWidth,height=container.clientHeight;if(!width||!height)return;renderer.setSize(width,height,false);camera.aspect=width/height;camera.zoom=width<600&&!targetSpread&&!isolatedKey ? .7 : 1;camera.updateProjectionMatrix();if(targetSpread||isolatedKey)fitView=true;}
+ function size(){if(!container||!active)return;const width=container.clientWidth,height=container.clientHeight;if(!width||!height)return;renderer.setSize(width,height,false);camera.aspect=width/height;camera.zoom=width<600&&!targetSpread&&!isolatedKey ? (['neuron','rules','search','learning'].includes(mode)?(mode==='neuron'?1.22:.98):.7) : (mode==='neuron'?1.22:1);camera.updateProjectionMatrix();if(targetSpread||isolatedKey)fitView=true;else if(['neuron','rules','search','learning'].includes(mode)&&parts.length){cameraDirection.copy(camera.position).sub(controls.target).normalize();const framing=mode==='neuron'?1.13:.84;camera.position.copy(controls.target).addScaledVector(cameraDirection,layoutController.distance(camera,null,1.5)*framing);camera.updateMatrixWorld();homePosition.copy(camera.position);homeTarget.copy(controls.target);controls.update();}}
  const resizeObserver=new ResizeObserver(size);
  function loop(now){
   frame=requestAnimationFrame(loop);let delta=Math.min(.12,(now-last)/1000||0);last=now;if(!active||document.hidden||document.body.dataset.walkOpen||!parts.length){wasInactive=true;return;}if(wasInactive){delta=0;wasInactive=false;}
@@ -130,14 +145,14 @@ export function createMuseumScene(onPick){
    }
    layoutController.update(camera,controls.target,spread,isolatedKey,true);
   }else parts.forEach(part=>part.position.copy(part.userData.base).addScaledVector(part.userData.offset,spread));
-  if(stageObject)stageObject.visible=spread<.02&&!isolatedKey;
+  if(stageObject)stageObject.visible=spread<.02&&!isolatedKey&&!['neuron','rules','search','learning'].includes(mode);
   if(PART_CATALOG[mode])auxiliary.forEach(object=>object.visible=spread<.02&&!isolatedKey);
   const phase=motion?.update(delta,spread,isolatedKey);
   if(motionLabel)motionLabel.textContent=reduced?'已启用减少动态效果':motion.clock.paused?'运转已暂停':phase;
   container.dataset.spread=spread>.999?'expanded':spread<.001?'assembled':'moving';container.dataset.isolated=isolatedKey||'';
   updateHotspots();renderer.render(scene,camera);
  }
- function syncZoom(){camera.zoom=(container.clientWidth<600&&!targetSpread&&!isolatedKey) ? .7 : 1;camera.updateProjectionMatrix();}
+ function syncZoom(){camera.zoom=container.clientWidth<600&&!targetSpread&&!isolatedKey ? (['neuron','rules','search','learning'].includes(mode)?(mode==='neuron'?1.22:.98):.7) : (mode==='neuron'?1.22:1);camera.updateProjectionMatrix();}
  function resetView(){if(!camera||!parts.length)return;isolatedKey=null;layoutController.resetBasis();controls.target.copy(homeTarget);cameraDirection.copy(homePosition).sub(homeTarget).normalize();camera.position.copy(controls.target).addScaledVector(cameraDirection,camera.position.distanceTo(controls.target));syncZoom();fitView=true;controls.update();}
  return {
   async show(host,newMode='match'){

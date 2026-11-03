@@ -6,6 +6,7 @@ import {EXHIBITS} from '../assets/museum-data.mjs';
 import {createLab, LABS} from '../assets/labs.mjs';
 import {
   ROLE_MISSIONS, VISITOR_STOPS, createRoleState, reduceRole, roleReview,
+  createLessonState, reduceLesson,
   createVisitorState, reduceVisitor, mountVisitorExperience
 } from '../assets/visitor-experience.mjs';
 
@@ -51,6 +52,25 @@ test('authored data is immutable and invalid role ids are rejected', () => {
   assert.throws(() => { ROLE_MISSIONS[0].stages[0].answer = 'other'; }, TypeError);
   assert.throws(() => { VISITOR_STOPS.push({}); }, TypeError);
   assert.throws(() => createRoleState('child'), RangeError);
+});
+
+test('lesson identity is assigned once and task progress survives state restoration', () => {
+  let lesson = createLessonState();
+  assert.equal(lesson.roleId, null);
+  const unassigned = reduceLesson(lesson, 'task', {action: 'inspect'});
+  assert.equal(unassigned, lesson);
+  lesson = reduceLesson(lesson, 'assign', 'engineer');
+  assert.equal(lesson.roleId, 'engineer');
+  assert.equal(reduceLesson(lesson, 'assign', 'analyst'), lesson);
+  lesson = reduceLesson(lesson, 'task', {action: 'inspect'});
+  assert.equal(lesson.roles.engineer.inspected, true);
+  const restored = createLessonState(JSON.parse(JSON.stringify(lesson)));
+  assert.equal(restored.roleId, 'engineer');
+  assert.equal(restored.roles.engineer.inspected, true);
+  assert.equal(reduceLesson(restored, 'assign', 'researcher'), restored);
+  const restarted = reduceLesson(restored, 'restart');
+  assert.equal(restarted.roleId, null);
+  assert.deepEqual(restarted.roles, createLessonState().roles);
 });
 
 for (const role of ROLE_MISSIONS) {

@@ -5,7 +5,9 @@ import {PART_CATALOG,GAME_STORIES,partDetail,matchSupplement,growthSupplement} f
 import {mountVisitorExperience} from './visitor-experience.mjs';
 import {mountMuseumWalk} from './museum-walk.mjs';
 const $=s=>document.querySelector(s);
-const heading=(no,kicker,title,desc)=>`<div class="museum-heading"><div class="eyebrow">${no} / ${kicker}</div><h1>${title}</h1><p>${desc}</p></div>`;
+const headingLabels={'00':'序章 / 漫长来路 · 1943—2016','01':'首尔 / 五番棋 · 2016年3月','02':'落子之前 / 策略、价值与树搜索','03':'数据的形状 / 图像与棋盘','04':'计算与成长 / 训练、算力与自我对弈'};
+const headingCopy={'00':'按时间看人工智能经历过哪些路线、低谷与转折。阿尔法围棋的胜利有更长的技术背景。','01':'2016年3月，阿尔法围棋与李世石进行五番棋，最终以4比1获胜。模型展示计算原理，不复刻比赛设备。','02':'策略网络给候选排序，价值网络估计局面，树搜索安排计算。逐步操作，观察统计如何变化。','03':'切换图像和棋盘编码，比较同一种张量结构中数值含义的差异。','04':'拆看硬件计算、参数训练和自我对弈。它们彼此协作，作用各不相同。'};
+const heading=(no,kicker,title,desc)=>`<div class="museum-heading"><div class="eyebrow">${headingLabels[no]||`${no} / ${kicker}`}</div><h1>${title}</h1><p>${headingCopy[no]||desc}</p></div>`;
 const cite=()=>`<div class="museum-sources">${SOURCES.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${n} ↗</a>`).join('')}</div>`;
 const detailCards=(rows)=>`<div class="deep-cards">${rows.map(([n,t,p])=>`<article><span>${n}</span><h3>${t}</h3><p>${p}</p></article>`).join('')}</div>`;
 const gameEntryCard=({id,no,kicker,title,desc,tags,href})=>`<section class="game-entry" id="${id}" aria-labelledby="${id}-title"><div class="game-entry-copy"><span class="game-entry-kicker">${no} / ${kicker}</span><h2 id="${id}-title">${title}</h2><p>${desc}</p><div class="game-entry-tags">${tags.map(tag=>`<span>${tag}</span>`).join('')}</div></div><div class="game-entry-cta"><span class="game-entry-label">展馆互动任务</span><strong>现在进入体验</strong><a class="game-entry-action" href="${href}" target="_blank" rel="noopener">进入游戏 <span aria-hidden="true">↗</span></a><small>将在新窗口打开，不影响当前展馆浏览</small></div></section>`;

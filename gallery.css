@@ -79,3 +79,5 @@
 .game-entry-action:hover,.game-entry-action:focus-visible{background:#e4d1aa;border-color:#e4d1aa;color:#18211e;transform:translateY(-1px)}
 .game-entry-cta small{margin-top:10px;color:#778d83;font-size:9px;line-height:1.7}
 @media(max-width:760px){.game-entry{display:block;margin:30px 0 8px;padding:23px 19px}.game-entry:after{top:12px;right:14px;font-size:7px}.game-entry h2{font-size:24px;margin-top:10px}.game-entry-copy p{font-size:12px;line-height:2}.game-entry-cta{margin-top:22px;padding:18px 0 0;border-top:1px solid #46544c;border-left:0}.game-entry-cta strong{margin-bottom:12px}.game-entry-action{width:100%;min-width:0}.game-entry-cta small{font-size:8px}}
+@media(min-width:761px){.object-layout{align-items:start}.history-scene{height:min(78vh,760px);min-height:480px}.object-inspector{height:min(78vh,760px);overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#626c5b #1c2420}}
+@media(max-width:760px){.object-inspector{height:auto;max-height:none;overflow:visible}.history-scene{height:320px}}

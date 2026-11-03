@@ -1,0 +1,808 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --panel: #ffffff;
+  --line: #cbd5e1;
+  --line-strong: #b6c2d4;
+  --ink: #17223b;
+  --muted: #52627b;
+  --blue: #0879bd;
+  --cyan: #008d9c;
+  --purple: #7436e6;
+  --pink: #d81b72;
+  --gold: #874d00;
+  --soft-blue: #eaf4ff;
+  --soft-purple: #f2ecff;
+  --soft-pink: #fff0f7;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--bg); }
+
+body {
+  min-width: 1100px;
+  margin: 0;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(92, 117, 166, .09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(92, 117, 166, .09) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--ink);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+a { color: var(--blue); }
+
+button, select, input { font-family: inherit; }
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid #f0a21b;
+  outline-offset: 4px;
+}
+
+.mast {
+  height: 98px;
+  margin-inline: 3.5%;
+  border-bottom: 2px solid var(--line-strong);
+  background: rgba(255, 255, 255, .78);
+  color: var(--ink);
+}
+
+#brand {
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+#brand small {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: .5px;
+}
+
+.brand-icon { color: var(--purple); }
+
+.mast nav { gap: 10px; color: var(--muted); font-size: 16px; }
+
+.main-nav a {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.main-nav a span { color: var(--purple); font-size: 13px; }
+
+.main-nav a[aria-current="page"] {
+  border-color: #d9c9ff;
+  border-radius: 10px;
+  background: var(--soft-purple);
+  color: var(--purple);
+}
+
+.main-nav a:hover { border-color: #f1b9d3; background: var(--soft-pink); color: var(--pink); }
+
+.source-nav {
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 9px 14px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.source-nav:hover { border-color: var(--pink); color: var(--pink); }
+
+main { max-width: 1900px; padding-inline: 3.5%; }
+
+.eyebrow {
+  color: var(--purple);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+h1, .museum-heading h1, .curator-cover h1 {
+  color: var(--ink) !important;
+  font-size: 64px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.2 !important;
+}
+
+h1 span { color: var(--blue) !important; font-size: 28px !important; font-weight: 700 !important; }
+
+h2, .panel-title, .museum-essay h2, .section-head h2, .exhibit-dossier h2 {
+  color: var(--ink) !important;
+  font-weight: 800 !important;
+}
+
+.hero p,
+.history-hero > p,
+.history-timeline article p,
+.museum-heading > p,
+.curator-cover p,
+.museum-essay > p,
+.deep-cards p,
+.bridge-note p,
+.dimension-lab p,
+.game-entry-copy p,
+.game-note p,
+.labs-hero > div > p,
+.explanation p,
+main .description,
+dialog p {
+  color: var(--muted) !important;
+  font-size: 20px !important;
+  line-height: 1.85 !important;
+}
+
+.history-hero { padding-top: 46px; }
+.history-hero h1 { margin-bottom: 20px; }
+
+.history-section-head,
+.history-timeline,
+.history-next,
+.history-thesis,
+.chapter-rail,
+.museum-sources {
+  border-color: var(--line-strong) !important;
+}
+
+.history-section-head { color: var(--purple); font-size: 18px; font-weight: 800; }
+
+.history-timeline article { border-color: var(--line) !important; }
+.history-timeline article time { color: var(--pink); font-size: 22px; font-weight: 800; }
+.history-timeline article h2 { font-size: 32px; }
+.history-timeline article a,
+.museum-sources a { color: var(--blue); font-size: 16px; font-weight: 700; }
+.era-label { color: var(--purple) !important; font-size: 15px !important; font-weight: 800; }
+.history-timeline .milestone > div {
+  border: 2px solid #d9c9ff;
+  border-radius: 14px;
+  background: var(--soft-purple);
+  box-shadow: 0 12px 32px rgba(58, 41, 118, .08);
+}
+
+.history-actions, .cover-actions { gap: 14px; }
+.solid-link {
+  border-radius: 10px !important;
+  background: var(--purple) !important;
+  border-color: var(--purple) !important;
+  color: #fff !important;
+  font-size: 17px !important;
+  font-weight: 800;
+  padding: 13px 20px !important;
+}
+.solid-link:hover { background: var(--pink) !important; border-color: var(--pink) !important; }
+
+.history-orbit { filter: saturate(1.15); }
+.year-core { background: var(--purple) !important; color: #fff !important; box-shadow: 0 0 0 12px #eee7ff, 0 18px 40px #8c6be044; }
+.orbit-note { border-color: #d8caff !important; background: #fff !important; color: var(--purple) !important; font-size: 15px !important; font-weight: 800; }
+
+.exhibit,
+.transport,
+.museum-exhibit,
+.lab-layout,
+.exhibit-process,
+.game-entry,
+.decision-detail,
+.search-experiment,
+.dimension-lab,
+.training-panel {
+  border-color: var(--line-strong) !important;
+  background: rgba(255, 255, 255, .92) !important;
+  box-shadow: 0 16px 44px rgba(44, 61, 91, .1);
+}
+
+.exhibit { grid-template-columns: minmax(0, 1fr) 410px; }
+.viewport,
+.museum-canvas,
+.history-scene { background: #eef3fa !important; }
+.viewport-header,
+.legend,
+.viewport-foot b,
+.viewport-foot small { color: var(--muted) !important; }
+.legend span:before { border-radius: 2px; }
+.view-actions button,
+.layer-label,
+.part-selector button,
+.inspection-actions button {
+  border-color: var(--line-strong) !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  font-size: 15px !important;
+}
+.layer-label.active,
+.view-actions button:hover,
+.view-actions button[aria-pressed="true"] {
+  border-color: var(--pink) !important;
+  background: var(--soft-pink) !important;
+  color: var(--pink) !important;
+}
+
+.inspector,
+.object-inspector,
+.museum-exhibit aside,
+.museum-exhibit aside.component-inspector,
+.lab-stages,
+.lab-workspace {
+  border-color: var(--line-strong) !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+}
+.panel-heading,
+.tensor,
+.part-io,
+.part-relation { border-color: var(--line) !important; color: var(--muted) !important; }
+.panel-kicker,
+.part-heading,
+.part-section h4 { color: var(--purple) !important; font-size: 15px !important; font-weight: 800 !important; }
+.panel-title { font-size: 38px !important; }
+.panel-subtitle { color: var(--ink) !important; font-size: 21px !important; font-weight: 700 !important; }
+.description { color: var(--muted) !important; }
+.technical,
+.tensor small,
+.overview-grid span,
+.experiment label,
+.experiment-header,
+.experiment p,
+.part-io span,
+.object-inspector li,
+.museum-exhibit aside p { color: var(--muted) !important; font-size: 16px !important; line-height: 1.75 !important; }
+.tensor b { color: var(--blue) !important; font-size: 16px !important; }
+.formula,
+.experiment,
+.game-note,
+.bridge-note { border-color: #d5c7ff !important; background: var(--soft-purple) !important; color: var(--ink) !important; }
+.formula { font-size: 17px !important; }
+
+.transport { background: #fff !important; }
+.buttons button,
+.speed select,
+.growth-tabs button,
+.dimension-controls button,
+.decision-path button {
+  border-color: var(--line-strong) !important;
+  border-radius: 8px;
+  background: #fff !important;
+  color: var(--ink) !important;
+  font-size: 16px !important;
+  font-weight: 700;
+}
+.buttons .primary,
+.decision-path button.active,
+.growth-tabs button.active,
+.dimension-controls button.active {
+  border-color: var(--blue) !important;
+  background: var(--blue) !important;
+  color: #fff !important;
+}
+.signal-row { color: var(--muted) !important; font-size: 16px !important; }
+.timeline button { border-color: var(--line-strong) !important; color: var(--muted) !important; font-size: 15px !important; font-weight: 700; }
+.timeline button.active { border-color: var(--pink) !important; background: var(--soft-pink) !important; color: var(--pink) !important; }
+.pipeline-caption { color: var(--muted) !important; font-size: 13px !important; }
+.explanation b { color: var(--purple) !important; font-size: 22px !important; font-weight: 800 !important; }
+
+.labs-hero h1 { color: var(--ink) !important; }
+.labs-count b,
+.history-stats strong,
+.match-score > b { color: var(--pink) !important; }
+.lab-stages button,
+.lab-stage-title,
+.lab-goal,
+#lab-body h2 { color: var(--ink) !important; }
+.lab-stages .current { background: var(--soft-purple) !important; color: var(--purple) !important; }
+.lab-feedback,
+.lab-feedback.passed { background: var(--soft-blue) !important; border-color: #a9d7f1 !important; color: var(--ink) !important; }
+
+.game-entry {
+  border-width: 2px !important;
+  background: var(--soft-pink) !important;
+}
+.game-entry:before { background: var(--pink) !important; }
+.game-entry:after { color: var(--pink) !important; }
+.game-entry h2 { color: var(--ink) !important; font-size: 34px !important; }
+.game-entry-kicker,
+.game-entry-label { color: var(--pink) !important; font-size: 15px !important; font-weight: 800; }
+.game-entry-tags span { border-color: #efb8d3 !important; background: #fff !important; color: var(--pink) !important; font-size: 14px !important; }
+.game-entry-action { border-radius: 8px; background: var(--pink) !important; border-color: var(--pink) !important; color: #fff !important; font-size: 16px !important; font-weight: 800; }
+
+footer { border-color: var(--line-strong) !important; background: rgba(255, 255, 255, .7); color: var(--muted) !important; font-size: 14px !important; }
+footer button { color: var(--blue) !important; font-size: 14px !important; }
+
+dialog {
+  border: 2px solid var(--line-strong) !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  box-shadow: 0 24px 70px rgba(29, 42, 73, .22);
+}
+dialog::backdrop { background: rgba(29, 42, 73, .22); backdrop-filter: blur(6px); }
+.dialog-head { color: var(--purple) !important; }
+dialog h2 { font-size: 38px !important; }
+dialog h3 { font-size: 24px !important; color: var(--ink) !important; }
+dialog a { color: var(--blue) !important; }
+
+#loader { background: #eef3fa !important; color: var(--purple) !important; font-size: 20px !important; }
+#loader span { background: var(--pink) !important; }
+#gl-error { color: #a31648 !important; }
+
+/* The walk-through scene remains a dark immersive room; the archive UI is light. */
+.walk-dialog { color-scheme: dark; }
+
+/* History chapters: strong ink, readable body copy, and colored evidence accents. */
+.curator-line,
+.history-thesis,
+.chapter-rail,
+.historical-object,
+.history-chapter,
+.history-finale {
+  border-color: #b9c6d8 !important;
+}
+
+.curator-line,
+.curator-line span:last-child,
+.folio,
+.history-thesis > span:last-child,
+.object-topline,
+.object-topline span:last-child {
+  color: #52627b !important;
+}
+
+.curator-cover h1 em,
+.cover-seal > span,
+.history-finale h2 em {
+  color: var(--pink) !important;
+}
+
+.curator-cover p,
+.history-thesis p,
+.history-thesis p b,
+.chapter-narrative p,
+.chapter-events p,
+.chapter-transition p,
+.history-finale p {
+  color: #263b5a !important;
+  font-size: 20px !important;
+  line-height: 1.9 !important;
+}
+
+.history-thesis p b { color: var(--purple) !important; font-weight: 800; }
+
+.chapter-rail {
+  background: #fff !important;
+  box-shadow: 0 12px 28px rgba(44, 61, 91, .08);
+}
+
+.chapter-rail button {
+  border-color: #d1dbe8 !important;
+  color: #263b5a !important;
+}
+
+.chapter-rail button > span,
+.chapter-rail button small {
+  color: var(--blue) !important;
+  font-size: 14px !important;
+}
+
+.chapter-rail button b {
+  color: #17223b !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+}
+
+.chapter-rail button.active {
+  background: var(--soft-purple) !important;
+  border-bottom-color: var(--purple) !important;
+}
+
+.chapter-rail button.active b { color: var(--purple) !important; }
+
+.historical-object {
+  background: #fff !important;
+  box-shadow: 0 16px 44px rgba(44, 61, 91, .1);
+}
+
+.history-chapter { padding-top: 58px; }
+.chapter-num { color: var(--purple) !important; font-size: 64px !important; font-weight: 800; letter-spacing: -2px; }
+.is-current .chapter-num { color: var(--pink) !important; }
+.chapter-period,
+.chapter-narrative > div > span,
+.chapter-transition > span,
+.chapter-sources > span {
+  color: var(--gold) !important;
+  font-size: 16px !important;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.history-chapter h2 {
+  color: #14284c !important;
+  font-size: 36px !important;
+  font-weight: 800 !important;
+  line-height: 1.45 !important;
+}
+
+.history-chapter > header button {
+  border-color: #8da5c0 !important;
+  color: var(--blue) !important;
+  font-size: 16px !important;
+  font-weight: 700;
+}
+
+.chapter-events { border-color: #86a0bd !important; }
+.chapter-events > div:before { background: var(--pink) !important; box-shadow: 0 0 0 5px #ffe3ef; }
+.chapter-events time { color: var(--blue) !important; font-size: 18px !important; font-weight: 800; }
+.chapter-events h3 { color: #245c8a !important; font-size: 24px !important; font-weight: 800 !important; }
+
+.chapter-narrative .limit-note {
+  border-left: 4px solid var(--pink) !important;
+  background: var(--soft-pink) !important;
+  box-shadow: none !important;
+}
+
+.chapter-narrative .limit-note > span { color: var(--pink) !important; font-size: 16px !important; font-weight: 800; }
+.chapter-narrative .limit-note p { color: #55304a !important; font-size: 18px !important; }
+.chapter-transition { border-color: #b9c6d8 !important; }
+.chapter-sources a { color: var(--blue) !important; font-size: 16px !important; font-weight: 700; }
+.history-finale h2 { color: #14284c !important; font-size: 36px !important; font-weight: 800 !important; }
+.history-finale .eyebrow { color: var(--purple) !important; }
+
+.object-inspector { background: #fff !important; }
+.object-inspector > span,
+.object-inspector .part-heading { color: var(--purple) !important; font-size: 15px !important; font-weight: 800; }
+.object-inspector h2 { color: #14284c !important; font-size: 34px !important; font-weight: 800 !important; }
+.object-inspector > p,
+.object-inspector li,
+.object-inspector .object-boundary { color: #263b5a !important; font-size: 18px !important; line-height: 1.8 !important; }
+.object-selector { background: #fff !important; border-color: #b9c6d8 !important; }
+.object-selector button { color: #263b5a !important; font-size: 16px !important; font-weight: 700; }
+.object-selector button span { color: var(--pink) !important; font-size: 14px !important; }
+.object-selector button.active { background: var(--soft-purple) !important; color: var(--purple) !important; border-bottom-color: var(--purple) !important; }
+
+/* Amber labels need to read as information, not low-contrast ornament. */
+.history-thesis > span:first-child,
+.chapter-period,
+.chapter-narrative > div > span,
+.chapter-transition > span,
+.chapter-sources > span,
+.visitor-kicker,
+.visitor-role-progress {
+  color: #874d00 !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px;
+}
+
+.history-thesis > span:first-child { font-size: 20px !important; }
+.visitor-kicker { display: inline-block; }
+
+/* Keep the 01–04 exhibit typography aligned with the readable 00 history page. */
+.page-view .museum-heading h1 {
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif !important;
+  font-size: clamp(42px, 4.2vw, 64px) !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+}
+
+.page-view .museum-heading > p,
+.page-view .museum-essay > p,
+.page-view .deep-cards p,
+.page-view .game-note p,
+.page-view .bridge-note p,
+.page-view .dimension-lab p,
+.page-view .boundary-lab > p {
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif !important;
+  font-size: 20px !important;
+  line-height: 1.85 !important;
+}
+
+.page-view .museum-essay h2,
+.page-view .section-head h2,
+.page-view .deep-cards h3,
+.page-view .museum-exhibit aside h3,
+.page-view .game-note h3,
+.page-view .bridge-note h3,
+.page-view .training-panel h3 {
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif !important;
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  line-height: 1.5 !important;
+}
+
+.page-view .deep-cards article > span,
+.page-view .museum-exhibit aside > span,
+.page-view .game-note > span,
+.page-view .game-note small,
+.page-view .museum-scene-controls span,
+.page-view .game-picker span,
+.page-view .game-picker b,
+.page-view .decision-path button,
+.page-view .decision-path button small,
+.page-view .search-actions > span,
+.page-view .search-actions > button,
+.page-view .search-table span,
+.page-view .search-table b,
+.page-view .training-panel > div > span,
+.page-view .training-values,
+.page-view .dimension-lab label,
+.page-view .dimension-boundary {
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+}
+
+.page-view .game-entry-copy p { font-size: 20px !important; }
+
+@media (max-width: 760px) {
+  .page-view .museum-heading h1 { font-size: 36px !important; }
+  .page-view .museum-heading > p,
+  .page-view .museum-essay > p,
+  .page-view .deep-cards p,
+  .page-view .game-note p,
+  .page-view .bridge-note p,
+  .page-view .dimension-lab p,
+  .page-view .boundary-lab > p,
+  .page-view .game-entry-copy p { font-size: 18px !important; }
+  .page-view .museum-essay h2,
+  .page-view .section-head h2,
+  .page-view .deep-cards h3,
+  .page-view .museum-exhibit aside h3,
+  .page-view .game-note h3,
+  .page-view .bridge-note h3,
+  .page-view .training-panel h3 { font-size: 22px !important; }
+}
+
+/* Contrast/readability pass for component dossiers and supporting exhibit UI. */
+.page-view .museum-exhibit aside,
+.page-view .museum-exhibit aside.component-inspector {
+  color: #17223b !important;
+}
+
+.page-view .museum-exhibit aside > span,
+.page-view .part-heading > span,
+.page-view .part-section h4,
+.page-view .component-inspector .part-section h4 {
+  color: #6332cc !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  line-height: 1.5 !important;
+}
+
+.page-view .part-heading i {
+  color: #176b56 !important;
+  border-color: #68a68f !important;
+  background: #edf8f2 !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+
+.page-view .museum-exhibit aside h3,
+.page-view .component-inspector > h3 {
+  color: #17223b !important;
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  line-height: 1.45 !important;
+}
+
+.page-view .museum-exhibit aside p,
+.page-view .museum-exhibit aside .part-role,
+.page-view .part-section p,
+.page-view .component-inspector .part-role,
+.page-view .component-inspector .part-section p {
+  color: #263b5a !important;
+  font-size: 19px !important;
+  font-weight: 500 !important;
+  line-height: 1.85 !important;
+}
+
+.page-view .part-io {
+  border-color: #b9c6d8 !important;
+}
+
+.page-view .part-io > div { border-color: #cbd5e1 !important; }
+
+.page-view .part-io span {
+  color: #52627b !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+}
+
+.page-view .part-io b {
+  color: #263b5a !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  line-height: 1.7 !important;
+}
+
+.page-view .part-section,
+.page-view .part-relation {
+  border-color: #cbd5e1 !important;
+}
+
+.page-view .deep-cards article > span,
+.page-view .game-note > span,
+.page-view .museum-scene-controls span,
+.page-view .training-panel > div > span,
+.page-view .search-actions > span,
+.page-view .dimension-lab label,
+.page-view .dimension-boundary {
+  color: #52627b !important;
+  font-weight: 700 !important;
+}
+
+.page-view .game-picker span,
+.page-view .search-table span,
+.page-view .search-status,
+.page-view .training-values,
+.page-view .museum-sources a {
+  color: #40536c !important;
+  font-weight: 600 !important;
+}
+
+.page-view .museum-exhibit aside .part-io span,
+.page-view .museum-exhibit aside .part-io b {
+  display: block;
+}
+
+/* The long-form explanation blocks below the models use the same readable ink. */
+.page-view .exhibit-dossier,
+.page-view .exhibit-dossier > header > p,
+.page-view .exhibit-process p,
+.page-view .dossier-pair p,
+.page-view .dossier-triad p,
+.page-view .match-context p,
+.page-view .dossier-glossary,
+.page-view .dossier-glossary p {
+  color: #263b5a !important;
+  font-size: 18px !important;
+  line-height: 1.85 !important;
+}
+
+.page-view .exhibit-dossier h2,
+.page-view .exhibit-process h3,
+.page-view .dossier-pair h3,
+.page-view .dossier-triad h3,
+.page-view .match-context h3 {
+  color: #17223b !important;
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  line-height: 1.5 !important;
+}
+
+.page-view .exhibit-process,
+.page-view .exhibit-process article,
+.page-view .dossier-pair article,
+.page-view .dossier-triad article,
+.page-view .match-context article,
+.page-view .dossier-glossary {
+  border-color: #b9c6d8 !important;
+  background: #fff !important;
+}
+
+.page-view .exhibit-process article > span,
+.page-view .dossier-pair article > span,
+.page-view .dossier-triad article > span,
+.page-view .match-context time,
+.page-view .game-analysis h4,
+.page-view .dossier-glossary summary {
+  color: #874d00 !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+}
+
+.page-view .dossier-pair a,
+.page-view .museum-sources a,
+.page-view .dossier-glossary a {
+  color: #0879bd !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+}
+
+.page-view .match-score span,
+.page-view .match-score p,
+.page-view .game-analysis p,
+.page-view .game-note small {
+  color: #40536c !important;
+  font-size: 17px !important;
+  line-height: 1.8 !important;
+}
+
+.page-view .game-picker button {
+  background: #172b3d !important;
+  border-color: #536b83 !important;
+}
+
+.page-view .game-picker button span,
+.page-view .game-picker button b {
+  color: #f4f7fb !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+}
+
+.page-view .game-picker button.active {
+  background: #4a3b1c !important;
+  border-color: #c28b22 !important;
+}
+
+.page-view .game-note {
+  background: #f3edff !important;
+  border-color: #b8a5ef !important;
+}
+
+.page-view .game-note > span {
+  color: #6332cc !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+}
+
+.page-view .game-note h3 {
+  color: #17223b !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+}
+
+.page-view .game-entry-copy,
+.page-view .game-entry-cta,
+.page-view .game-entry-copy p,
+.page-view .game-entry-cta small {
+  color: #263b5a !important;
+}
+
+.page-view .game-entry-copy p { font-size: 19px !important; }
+.page-view .game-entry-cta small { font-size: 15px !important; }
+
+@media (max-width: 760px) {
+  .page-view .exhibit-dossier,
+  .page-view .exhibit-dossier > header > p,
+  .page-view .exhibit-process p,
+  .page-view .dossier-pair p,
+  .page-view .dossier-triad p,
+  .page-view .match-context p,
+  .page-view .dossier-glossary,
+  .page-view .dossier-glossary p { font-size: 17px !important; }
+  .page-view .exhibit-process h3,
+  .page-view .dossier-pair h3,
+  .page-view .dossier-triad h3,
+  .page-view .match-context h3 { font-size: 22px !important; }
+  .page-view .match-score span,
+  .page-view .match-score p,
+  .page-view .game-analysis p,
+  .page-view .game-note small { font-size: 16px !important; }
+  .page-view .game-picker button span,
+  .page-view .game-picker button b { font-size: 15px !important; }
+}
+
+@media (max-width: 760px) {
+  .page-view .museum-exhibit aside h3,
+  .page-view .component-inspector > h3 { font-size: 25px !important; }
+  .page-view .museum-exhibit aside p,
+  .page-view .part-section p,
+  .page-view .component-inspector .part-role,
+  .page-view .component-inspector .part-section p { font-size: 18px !important; }
+  .page-view .part-io span,
+  .page-view .part-io b { font-size: 16px !important; }
+}
+
+
+/* Improve 3D model contrast: black museum viewport */
+.exhibit .viewport,
+.exhibit .viewport canvas#scene {
+  background: #000 !important;
+}

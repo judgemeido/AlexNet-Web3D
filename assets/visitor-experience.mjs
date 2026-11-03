@@ -56,26 +56,26 @@ export const ROLE_MISSIONS = freeze([
   },
   {
     id: 'engineer', name: '系统工程师', subtitle: '沿数据路径排查性能与职责',
-    brief: '你负责一套虚构的展陈计算平台。检查任务分配、识别数据瓶颈，最后写出上线说明。',
+    brief: '这堂课里，你担任系统工程师：梳理计算任务如何分工，排查数据瓶颈，最后整理运行说明。',
     takeaway: '计算、存储和调度共同决定运行条件；硬件升级与网络学习需要分别验证。',
     stages: [
       {
         title: '分配计算职责', route: 'match',
         situation: '棋盘编码已到达任务队列：搜索需要维护分支统计，网络评估需要重复执行大量张量乘加。',
         action: '追踪一次评估请求',
-        evidence: '教学链路：状态编码 → 搜索调度 → 网络批量评估 → 结果回传。通用处理器适合控制逻辑；加速器适合大批相似数值运算。实际分工取决于实现。',
-        question: '在这套教学平台上，怎样分工最合理？', answer: 'cooperate',
+        evidence: '计算链路：状态编码 → 搜索调度 → 网络批量评估 → 结果回传。通用处理器负责控制逻辑，加速器适合批量数值运算。',
+        question: '沿着这条计算链路，怎样分工更合适？', answer: 'cooperate',
         options: [
           option('fan', '让风扇决定候选落子', '风扇负责气流和散热，不执行候选评估或搜索调度。'),
-          option('cooperate', '通用处理器组织搜索，加速器执行批量网络评估', '控制与数值计算协作，存储和互联继续为两者供数；这不是历史硬件的精确部署记录。'),
+          option('cooperate', '通用处理器组织搜索，加速器执行批量网络评估', '控制与数值计算各有职责，存储和互联为两者供数。'),
           option('memory', '增加存储容量就能代替全部计算', '容量解决可存放的数据规模，不能代替执行指令和数值运算。')
         ]
       },
       {
         title: '诊断数据瓶颈', route: 'growth',
-        situation: '合成监测记录显示：每批计算用时 4 ms，等待数据用时 12 ms。暂按串行阶段相加估计，不考虑重叠。',
+        situation: '每批计算用时 4 ms，等待数据用时 12 ms。先按两个阶段串行相加，再比较两种优化方案。',
         action: '对照两种升级方案',
-        evidence: '原耗时 4 + 12 = 16 ms。计算减半：2 + 12 = 14 ms。等待减半：4 + 6 = 10 ms。这是理想化估算，不是设备实测。',
+        evidence: '原耗时为 4 + 12 = 16 ms。计算减半后是 2 + 12 = 14 ms；等待减半后是 4 + 6 = 10 ms。设备升级后，还要重新测量耗时和瓶颈。',
         question: '在给定条件下，哪项优化更值得优先验证？', answer: 'supply',
         options: [
           option('cores', '只把计算速度翻倍，因为核心总是瓶颈', '按记录仅降至 14 ms。等待占比更高，不能仅凭核心数量判断瓶颈。'),
@@ -87,10 +87,10 @@ export const ROLE_MISSIONS = freeze([
         title: '交付运行说明', route: 'decision',
         situation: '平台已完成加速。在一次使用固定权重的决策请求中，搜索会反复评估候选并更新访问统计。',
         action: '核对运行期间的变化',
-        evidence: '本情境：网络权重保持固定；搜索树的访问次数与平均评估更新。训练任务才依据学习目标调整网络参数。硬件性能另行测量。',
+        evidence: '这次请求使用固定权重；搜索会更新访问次数和平均评估。训练任务才会依据学习目标调整网络参数。',
         question: '交付文档应怎样区分推理、搜索与训练？', answer: 'separate',
         options: [
-          option('learn', '每次搜索回传都自动改变网络权重', '搜索统计与网络参数是不同对象。本情境未执行训练更新。'),
+          option('learn', '每次搜索回传都自动改变网络权重', '搜索更新的是分支统计；这里没有训练更新网络参数。'),
           option('separate', '固定权重做评估，搜索更新统计，训练另行更新参数', '三种职责已分清。加速让计算更快，并不直接证明参数更优或系统更智能。'),
           option('speed', '运行更快已经证明棋力更高', '速度改善可能增加预算，但棋力仍需受控评测，不能直接等同。')
         ]
@@ -143,12 +143,11 @@ export const ROLE_MISSIONS = freeze([
 ]);
 
 const narratives = [
-  ['从积累看转折', '沿历史章节查看规则、学习、数据与计算如何逐步汇合。2016 年是本展的入口，早期研究则说明突破所需的长期积累。', '观察：不同路线解决了什么问题？不要把视觉网络的结构直接当成围棋系统。'],
-  ['从比赛看系统', '将五番棋的公开结果与旁边的计算原理模型对照。棋盘、调度、评估与互联共同参与决策，机架形状本身不能说明棋力。', '观察：切换对局档案，区分历史讲解与统一使用的合成棋形。'],
-  ['从候选走到决策', '策略提出相对倾向，价值估计局面，搜索把有限预算分配到分支。手动执行选择、扩展、评估与回传，检查哪一刻统计发生变化。', '观察：最高先验是否始终等于搜索后的首选？估计为何仍不是胜负保证？'],
-  ['把状态拆成平面', '对照图像颜色通道与棋盘状态编码。二者共享张量语言，但输入语义、任务目标和网络输出不同。原图像网络仍是独立示例。', '操作：切换棋盘编码、调整切片；留意简化三平面与完整历史编码的边界。'],
-  ['区分计算与学习', '拆看加速计算、反馈更新与自我对弈。硬件改变执行条件，训练调整参数，自我对弈生成经验；三者需要不同的验证方法。', '观察：局部误差下降证明了什么？2016 年与后续零起点研究有哪些流程差异？'],
-  ['用操作形成自己的结论', '六项数值实验、角色任务和复盘档案现在汇入成长系统的最后一层。你可以核查数据、计算或复盘证据，把观察转为可说明依据的判断。', '操作：完成一个三阶段角色任务，并读完复盘。教学数据不等于真实历史推理。']
+  ['沿时间看方法怎么变', '从早期逻辑模型、规则程序和神经网络，一路看到数据、计算与学习方法在不同阶段怎样发展。2016 年是一次重要突破，也有更早的研究作铺垫。', '留意：不同方法各自解决了什么问题？图像分类网络并不是围棋系统的原样结构。'],
+  ['回看首尔五番棋', '先看公开的比赛结果，再拆解计算系统原理模型。棋盘状态、网络评估、搜索和硬件各有职责；机架外观本身不能说明系统如何下棋。', '留意：哪些内容来自比赛记录，哪些棋形和设备只是展览示意？'],
+  ['跟着候选走一遍', '策略网络给候选提供倾向，价值网络估计局面，树搜索反复选择、扩展、评估并回传。你可以逐步操作，观察访问次数和平均值如何改变。', '试试看：先验最高的候选，搜索后还一定排第一吗？局面估值能否保证最终胜负？'],
+  ['看数据如何排布', '图像颜色通道与棋盘状态都能写成张量，但其中的数值代表不同内容。切换平面并改变间距，观察数据进入模型前怎样组织。', '留意：展出的三张棋盘平面是简化编码，不等同于 2016 年系统使用的完整输入。'],
+  ['拆开训练与计算', '观察加速器如何执行运算、训练如何更新参数，以及自我对弈怎样产生经验。这些环节会互相配合，但不是同一件事。', '想一想：单次误差下降能说明什么？硬件变快又能否直接说明模型学得更好？']
 ];
 export const VISITOR_STOPS = freeze(EXHIBITS.map(([id, number, name], index) => ({
   id, number, name, hash: `#${id}`, title: narratives[index][0],
@@ -159,6 +158,43 @@ export function createRoleState(roleId = 'researcher') {
   if (!ROLE_MISSIONS.some(role => role.id === roleId)) throw new RangeError('未知角色');
   return {roleId, stage: 0, inspected: false, passed: false, complete: false,
     feedback: '先执行取证操作，再根据证据作出判断。', records: []};
+}
+
+const createRoleStates = () => Object.fromEntries(ROLE_MISSIONS.map(role => [role.id, createRoleState(role.id)]));
+
+/** One identity owns the whole lesson; task progress is restored with that identity. */
+export function createLessonState(saved = null) {
+  const roles = createRoleStates();
+  if (!saved || typeof saved !== 'object') return {roleId: null, roles};
+  for (const role of ROLE_MISSIONS) {
+    const candidate = saved.roles?.[role.id];
+    if (!candidate || typeof candidate !== 'object') continue;
+    const stage = Math.max(0, Math.min(2, Number.isInteger(candidate.stage) ? candidate.stage : 0));
+    const records = Array.isArray(candidate.records) ? candidate.records
+      .filter(record => record && Number.isInteger(record.stage) && record.stage >= 0 && record.stage <= 2 &&
+        role.stages[record.stage].options.some(choice => choice.id === record.choice) && typeof record.correct === 'boolean')
+      .map(record => ({stage: record.stage, choice: record.choice, correct: record.correct})) : [];
+    roles[role.id] = {...createRoleState(role.id), stage,
+      inspected: candidate.inspected === true, passed: candidate.passed === true,
+      complete: candidate.complete === true && stage === 2 && candidate.passed === true,
+      feedback: typeof candidate.feedback === 'string' ? candidate.feedback : createRoleState(role.id).feedback,
+      records};
+    if (roles[role.id].complete) roles[role.id].passed = true;
+  }
+  const roleId = ROLE_MISSIONS.some(role => role.id === saved.roleId) ? saved.roleId : null;
+  return {roleId, roles};
+}
+
+export function reduceLesson(state, event, value) {
+  if (event === 'restart') return createLessonState();
+  if (event === 'assign') {
+    if (state.roleId || !ROLE_MISSIONS.some(role => role.id === value)) return state;
+    return {...state, roleId: value};
+  }
+  if (event !== 'task' || !state.roleId || !value || typeof value !== 'object') return state;
+  const current = state.roles[state.roleId];
+  const next = reduceRole(current, value.action, value.value);
+  return next === current ? state : {...state, roles: {...state.roles, [state.roleId]: next}};
 }
 
 /** Pure, immutable task transitions. A correct answer cannot bypass evidence collection. */
@@ -226,6 +262,7 @@ export function reduceVisitor(state, event, value) {
 
 const mounts = new WeakMap();
 const STORAGE_KEY = 'museum.visitor.visited.v1';
+const LESSON_STORAGE_KEY = 'museum.lesson.identity.v1';
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char]));
 
 /**
@@ -241,20 +278,30 @@ export function mountVisitorExperience({scene, navigate} = {}) {
   if (mounts.has(doc)) return mounts.get(doc);
   const win = doc.defaultView;
   const host = doc.querySelector('#experiments-view');
-  if (!host || !doc.body) throw new Error('请在五展区初始化后挂载：缺少 #experiments-view');
+  const identityHost = doc.querySelector('#origins-view .curator-hero');
+  if (!host || !identityHost || !doc.body) throw new Error('请先挂载历史展区与任务展区');
   let stored = [];
   try { stored = JSON.parse(win.localStorage.getItem(STORAGE_KEY) || '[]'); } catch { /* Private/file mode remains usable. */ }
-  let visitor = createVisitorState(stored), roleId = 'researcher', destroyed = false, returnFocus = null;
+  let savedLesson = null;
+  try { savedLesson = JSON.parse(win.localStorage.getItem(LESSON_STORAGE_KEY) || 'null'); } catch { /* Private/file mode remains usable. */ }
+  const restoredLesson = createLessonState(savedLesson);
+  let visitor = createVisitorState(stored), lesson = restoredLesson.roleId === 'engineer'
+    ? restoredLesson : {...createLessonState(), roleId: 'engineer'}, destroyed = false, returnFocus = null;
   let guideMarkup = '', mapMarkup = '';
-  const roles = Object.fromEntries(ROLE_MISSIONS.map(role => [role.id, createRoleState(role.id)]));
-  const section = doc.createElement('section');
-  section.className = 'visitor-experience';
-  section.id = 'visitor-experience';
-  section.setAttribute('aria-labelledby', 'visitor-title');
-  section.innerHTML = `<header class="visitor-heading"><span class="visitor-kicker">参与式研习 / 三种专业视角</span><h2 class="visitor-title" id="visitor-title">成为问题的提出者。</h2><p class="visitor-copy">选择一个角色，完成取证、判断与复盘。每条任务包含三个阶段，可随时切换角色并保留本次进度。</p><p class="visitor-boundary">教学情境推演 · 人物职责与任务数据由展陈编写，不是历史人物经历、比赛实录或真实模型推理。</p></header><div class="visitor-role-list" aria-label="选择研习角色"></div><div class="visitor-workspace"></div>`;
-  host.append(section);
-  const roleList = section.querySelector('.visitor-role-list');
-  const workspace = section.querySelector('.visitor-workspace');
+  const identitySection = doc.createElement('section');
+  identitySection.className = 'visitor-experience visitor-identity';
+  identitySection.id = 'visitor-identity';
+  identitySection.setAttribute('aria-labelledby', 'visitor-title');
+  identitySection.innerHTML = `<header class="visitor-heading"><span class="visitor-kicker">课程导入 / 00</span><h2 class="visitor-title" id="visitor-title">本堂课，我们以系统工程师的身份探索。</h2><p class="visitor-copy">沿着数据、计算与决策这条线索，回看人工智能的发展，再拆解阿尔法围棋怎样工作。</p></header><div class="visitor-identity-status"></div>`;
+  identityHost.after(identitySection);
+  const identityStatus = identitySection.querySelector('.visitor-identity-status');
+  const taskSection = doc.createElement('section');
+  taskSection.className = 'visitor-experience visitor-task-section';
+  taskSection.id = 'visitor-experience';
+  taskSection.setAttribute('aria-labelledby', 'visitor-task-title');
+  taskSection.innerHTML = `<header class="visitor-heading"><span class="visitor-kicker">课程任务 / 04</span><h2 class="visitor-title" id="visitor-task-title">核对证据，再作判断。</h2><p class="visitor-copy">00 页已说明本堂课的角色。这里的任务会沿用这个身份，完成取证、判断与复盘。</p></header><div class="visitor-workspace"></div>`;
+  host.append(taskSection);
+  const workspace = taskSection.querySelector('.visitor-workspace');
 
   const tools = doc.createElement('aside');
   tools.className = 'visitor-tools';
@@ -269,7 +316,7 @@ export function mountVisitorExperience({scene, navigate} = {}) {
   dialog.className = 'visitor-dialog';
   dialog.setAttribute('aria-labelledby', 'visitor-map-title');
   dialog.setAttribute('aria-describedby', 'visitor-map-intro');
-   dialog.innerHTML = `<div class="visitor-dialog-head"><span class="visitor-kicker">五区展陈 / 自由参观</span><button type="button" class="visitor-close" data-visitor-action="close" aria-label="关闭参观地图" autofocus>关闭 ×</button></div><h2 class="visitor-title" id="visitor-map-title">把线索，连成自己的路径。</h2><p class="visitor-copy" id="visitor-map-intro">自由选择任一展区，或从第一站开始手动讲解。已访问标记在本浏览器可用存储中保留；讲解只在你操作时前进。</p><div class="visitor-map-grid"></div><div class="visitor-map-footer"><span class="visitor-map-status"></span><button type="button" class="visitor-primary" data-visitor-action="start">开始五站讲解 →</button></div>`;
+   dialog.innerHTML = `<div class="visitor-dialog-head"><span class="visitor-kicker">五个展区 / 自由参观</span><button type="button" class="visitor-close" data-visitor-action="close" aria-label="关闭参观地图" autofocus>关闭 ×</button></div><h2 class="visitor-title" id="visitor-map-title">选择想看的展区。</h2><p class="visitor-copy" id="visitor-map-intro">点击展区卡片即可跳转；也可以从第一站开始按顺序讲解。访问记录保存在这台设备上。</p><div class="visitor-map-grid"></div><div class="visitor-map-footer"><span class="visitor-map-status"></span><button type="button" class="visitor-primary" data-visitor-action="start">开始五站讲解 →</button></div>`;
   doc.body.append(dialog);
   const mapGrid = dialog.querySelector('.visitor-map-grid');
   const status = dialog.querySelector('.visitor-map-status');
@@ -279,6 +326,13 @@ export function mountVisitorExperience({scene, navigate} = {}) {
   const focusWorkspace = () => focus(workspace.querySelector('.visitor-stage-title, .visitor-review-title'));
   function persist() {
     try { win.localStorage.setItem(STORAGE_KEY, JSON.stringify(visitor.visited)); } catch { /* Session state still works. */ }
+  }
+  function persistLesson() {
+    try { win.localStorage.setItem(LESSON_STORAGE_KEY, JSON.stringify(lesson)); } catch { /* Session state still works. */ }
+  }
+  function renderIdentity() {
+    const role = ROLE_MISSIONS.find(item => item.id === 'engineer');
+    identityStatus.innerHTML = `<div class="visitor-assigned"><div><span class="visitor-kicker">课堂角色</span><strong>系统工程师</strong><p class="visitor-copy">${role.brief}</p><p class="visitor-role-progress">从历史展区到任务实验，始终以这个身份观察和判断。</p></div></div>`;
   }
   function refreshMap() {
     const current = stopIndex(win.location.hash);
@@ -327,17 +381,21 @@ export function mountVisitorExperience({scene, navigate} = {}) {
     focus(guide.querySelector('.visitor-guide-title'));
   }
   function renderRole() {
+    if (!lesson.roleId) {
+      workspace.innerHTML = `<div class="visitor-unassigned"><span class="visitor-kicker">课程任务</span><h3>任务准备中。</h3><p class="visitor-copy">请从 00 页进入本展，再回到这里继续探索。</p><a class="visitor-primary" href="#origins" data-visitor-reference="origins">前往 00 · 序章</a></div>`;
+      return;
+    }
+    const roleId = lesson.roleId;
+    const roles = lesson.roles;
     const state = roles[roleId], role = ROLE_MISSIONS.find(item => item.id === roleId);
     const previousFeedback = workspace.querySelector('.visitor-feedback');
-    roleList.innerHTML = ROLE_MISSIONS.map(item => `<button type="button" class="visitor-role-card" data-visitor-role="${item.id}" aria-pressed="${item.id === roleId}" aria-controls="visitor-role-content"><strong class="visitor-role-name">${item.name}</strong><span class="visitor-copy">${item.subtitle}</span><span class="visitor-role-progress">${roles[item.id].complete ? '已完成复盘' : `阶段 ${roles[item.id].stage + 1} / 3`}</span></button>`).join('');
-    workspace.id = 'visitor-role-content';
     const review = roleReview(state);
     if (review) {
-      workspace.innerHTML = `<span class="visitor-kicker">${role.name} / 研习档案已完成</span><h3 class="visitor-review-title" tabindex="-1">你的判断，形成了一条证据链。</h3><p class="visitor-copy">${review.takeaway}</p><p class="visitor-review-count">完成 3 / 3 阶段 · 提交 ${state.records.length} 次 · 修正 ${review.corrections} 次。修正用于复盘，不作为能力排名。</p><ol class="visitor-review-list">${review.stages.map(item => `<li class="visitor-review-item"><h4 class="visitor-review-heading">${item.title}</h4><p class="visitor-copy">${item.evidence}</p><p class="visitor-conclusion">${item.conclusion}</p><span class="visitor-attempts">本阶段提交 ${item.attempts} 次</span></li>`).join('')}</ol><p class="visitor-boundary">以上为展陈编写的情境推演。局部数值与判断不能代表真实比赛、真实设备性能或完整系统能力。</p><div class="visitor-task-actions"><button type="button" class="visitor-secondary" data-visitor-task="restart">重新研习此角色</button><button type="button" class="visitor-primary" data-visitor-task="map">打开参观地图 →</button></div>`;
+      workspace.innerHTML = `<span class="visitor-kicker">${role.name} / 研习档案已完成</span><h3 class="visitor-review-title" tabindex="-1">任务复盘</h3><p class="visitor-copy">${review.takeaway}</p><p class="visitor-review-count">完成 3 / 3 阶段 · 提交 ${state.records.length} 次 · 修正 ${review.corrections} 次。修正用于复盘，不作为能力排名。</p><ol class="visitor-review-list">${review.stages.map(item => `<li class="visitor-review-item"><h4 class="visitor-review-heading">${item.title}</h4><p class="visitor-copy">${item.evidence}</p><p class="visitor-conclusion">${item.conclusion}</p><span class="visitor-attempts">本阶段提交 ${item.attempts} 次</span></li>`).join('')}</ol><p class="visitor-copy">这次复盘记录了三项任务中的证据与判断。系统整体表现还要结合对局结果、设备测试和独立评估。</p><div class="visitor-task-actions"><button type="button" class="visitor-primary" data-visitor-task="map">打开参观地图 →</button></div>`;
       return;
     }
     const stage = role.stages[state.stage];
-    workspace.innerHTML = `<div class="visitor-task-head"><span class="visitor-kicker">${role.name} / 阶段 ${state.stage + 1} / 3</span><button type="button" class="visitor-text-button" data-visitor-task="restart">重置此角色</button></div><h3 class="visitor-stage-title" tabindex="-1">${stage.title}</h3><p class="visitor-brief">${role.brief}</p><p class="visitor-situation">${stage.situation}</p><div class="visitor-evidence"><button type="button" class="visitor-secondary" data-visitor-task="inspect" ${state.inspected ? 'disabled' : ''}>${state.inspected ? '已执行：' : '执行：'}${stage.action}</button>${state.inspected ? `<p class="visitor-evidence-copy">${stage.evidence}</p>` : '<p class="visitor-copy">先执行操作，调出本阶段证据。</p>'}</div><fieldset class="visitor-choices" ${!state.inspected || state.passed ? 'disabled' : ''}><legend class="visitor-question">${stage.question}</legend>${stage.options.map(choice => `<button type="button" class="visitor-choice" data-visitor-answer="${choice.id}">${choice.text}</button>`).join('')}</fieldset><p class="visitor-feedback ${state.passed ? 'visitor-feedback-success' : ''}" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(state.feedback)}</p><div class="visitor-task-actions"><button type="button" class="visitor-text-button" data-visitor-reference="${stage.route}">参照展区：${VISITOR_STOPS.find(stop => stop.id === stage.route).name} ↗</button><button type="button" class="visitor-primary" data-visitor-task="next" ${state.passed ? '' : 'disabled'}>${state.stage === 2 ? '生成最终复盘 →' : '进入下一阶段 →'}</button></div>`;
+    workspace.innerHTML = `<div class="visitor-task-head"><span class="visitor-kicker">${role.name} / 阶段 ${state.stage + 1} / 3</span><span class="visitor-role-progress">同一身份 · 全程任务</span></div><h3 class="visitor-stage-title" tabindex="-1">${stage.title}</h3><p class="visitor-brief">${role.brief}</p><p class="visitor-situation">${stage.situation}</p><div class="visitor-evidence"><button type="button" class="visitor-secondary" data-visitor-task="inspect" ${state.inspected ? 'disabled' : ''}>${state.inspected ? '已执行：' : '执行：'}${stage.action}</button>${state.inspected ? `<p class="visitor-evidence-copy">${stage.evidence}</p>` : '<p class="visitor-copy">先执行操作，调出本阶段证据。</p>'}</div><fieldset class="visitor-choices" ${!state.inspected || state.passed ? 'disabled' : ''}><legend class="visitor-question">${stage.question}</legend>${stage.options.map(choice => `<button type="button" class="visitor-choice" data-visitor-answer="${choice.id}">${choice.text}</button>`).join('')}</fieldset><p class="visitor-feedback ${state.passed ? 'visitor-feedback-success' : ''}" role="status" aria-live="polite" aria-atomic="true">${escapeHTML(state.feedback)}</p><div class="visitor-task-actions"><button type="button" class="visitor-text-button" data-visitor-reference="${stage.route}">参照展区：${VISITOR_STOPS.find(stop => stop.id === stage.route).name} ↗</button><button type="button" class="visitor-primary" data-visitor-task="next" ${state.passed ? '' : 'disabled'}>${state.stage === 2 ? '生成最终复盘 →' : '进入下一阶段 →'}</button></div>`;
     if (previousFeedback) {
       const replacement = workspace.querySelector('.visitor-feedback');
       replacement.replaceWith(previousFeedback);
@@ -366,39 +424,37 @@ export function mountVisitorExperience({scene, navigate} = {}) {
     if (action === 'return') { go(VISITOR_STOPS[visitor.index].hash); focus(guide.querySelector('.visitor-guide-title')); }
     if (action === 'highlight') { scene?.select?.('board'); announcement.textContent = '已标注棋盘状态入口。请结合主展厅部件说明阅读。'; }
   });
-  on(section, 'click', event => {
-    const button = event.target.closest('button');
-    if (!button || !section.contains(button)) return;
-    const selected = button.dataset.visitorRole;
-    if (selected && roles[selected]) { roleId = selected; renderRole(); focus(roleList.querySelector(`[data-visitor-role="${roleId}"]`)); return; }
+  on(taskSection, 'click', event => {
+    const button = event.target.closest('button, a');
+    if (!button || !taskSection.contains(button)) return;
     if (button.dataset.visitorReference) { go(`#${button.dataset.visitorReference}`); return; }
     const task = button.dataset.visitorTask;
     if (task === 'map') { openMap(); return; }
     const answer = button.dataset.visitorAnswer;
     if (!task && !answer) return;
-    roles[roleId] = reduceRole(roles[roleId], answer ? 'answer' : task, answer);
+    lesson = reduceLesson(lesson, 'task', {action: answer ? 'answer' : task, value: answer});
+    persistLesson();
     renderRole();
-    if (task === 'next' || task === 'restart') focusWorkspace();
+    if (task === 'next') focusWorkspace();
     else if (task === 'inspect') focus(workspace.querySelector('[data-visitor-answer]'));
     else if (answer) {
-      if (roles[roleId].passed) focus(workspace.querySelector('[data-visitor-task="next"]'));
+      if (lesson.roles[lesson.roleId].passed) focus(workspace.querySelector('[data-visitor-task="next"]'));
       else focus(workspace.querySelector(`[data-visitor-answer="${answer}"]`));
     }
   });
   on(win, 'hashchange', () => visit(win.location.hash));
-  renderRole(); visit(win.location.hash);
+  renderIdentity(); renderRole(); persistLesson(); visit(win.location.hash);
   const api = {
     openMap,
-    getState: () => ({visitor: {...visitor, visited: [...visitor.visited]}, roleId,
-      roles: Object.fromEntries(Object.entries(roles).map(([id, state]) => [id, {...state, records: state.records.map(record => ({...record}))}]))}),
+    getState: () => ({visitor: {...visitor, visited: [...visitor.visited]}, lesson: createLessonState(lesson), roleId: lesson.roleId, roles: createLessonState(lesson).roles}),
     destroy() {
       if (destroyed) return;
       destroyed = true;
       closeMap(); cleanup.forEach(remove => remove());
-      if (section.contains(doc.activeElement) || tools.contains(doc.activeElement) || dialog.contains(doc.activeElement)) {
+      if (identitySection.contains(doc.activeElement) || taskSection.contains(doc.activeElement) || tools.contains(doc.activeElement) || dialog.contains(doc.activeElement)) {
         focus(doc.querySelector('.main-nav a[aria-current="page"], .main-nav a'));
       }
-      section.remove(); tools.remove(); dialog.remove(); mounts.delete(doc);
+      identitySection.remove(); taskSection.remove(); tools.remove(); dialog.remove(); mounts.delete(doc);
     }
   };
   mounts.set(doc, api);
