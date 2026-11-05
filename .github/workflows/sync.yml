@@ -1,0 +1,27 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    # 每天北京时间早上 8 点自动同步一次（UTC时间 0点）
+    # 你可以修改为 '*/30 * * * *' 表示每30分钟同步一次
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许你在网页上手动触发测试
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 必须给写入权限！
+    steps:
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          ref: main # 你自己的分支名，如果是 master 请改成 master
+
+      - name: Sync upstream changes
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          upstream_sync_repo: 对方的用户名/对方的仓库名 # 替换为目标仓库，如 torvalds/linux
+          upstream_sync_branch: main # 对方的分支名
+          target_sync_branch: main   # 你自己的分支名
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }} # 无需修改，系统自带
