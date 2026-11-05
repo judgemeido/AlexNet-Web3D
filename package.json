@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node --test tests/network.test.mjs tests/science.test.mjs tests/labs.test.mjs tests/museum.test.mjs tests/history.test.mjs tests/exhibit-details.test.mjs tests/exhibit-layout.test.mjs tests/visitor-experience.test.mjs tests/walk-state.test.mjs tests/model-assets.test.mjs tests/history-model-assets.test.mjs tests/exhibit-motion.test.mjs tests/network-motion.test.mjs tests/live-model-assets.test.mjs"
+    "build:cloudflare": "node build.mjs --cloudflare",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev",
+    "deploy:check": "wrangler deploy --dry-run",
+    "test": "node --test tests/network.test.mjs tests/science.test.mjs tests/labs.test.mjs tests/museum.test.mjs tests/history.test.mjs tests/exhibit-details.test.mjs tests/exhibit-layout.test.mjs tests/visitor-experience.test.mjs tests/walk-state.test.mjs tests/model-assets.test.mjs tests/history-model-assets.test.mjs tests/exhibit-motion.test.mjs tests/network-motion.test.mjs tests/live-model-assets.test.mjs tests/gltf-asset.test.mjs tests/cloudflare-build.test.mjs"
   },
   "dependencies": {
     "three": "0.180.0"
   },
   "devDependencies": {
-    "esbuild": "0.28.2"
+    "esbuild": "0.28.2",
+    "wrangler": "4.158.0"
   }
 }

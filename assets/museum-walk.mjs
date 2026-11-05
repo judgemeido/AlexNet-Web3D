@@ -1,6 +1,6 @@
 import * as T from 'three';
 import {RoomEnvironment} from 'three/examples/jsm/environments/RoomEnvironment.js';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {loadGltfAsset} from './gltf-asset.mjs';
 import {loadEngineeringModel,disposeEngineeringModel} from './engineering-models.mjs';
 import sculptureBytes from './models/learning-sculpture.glb';
 import {WALK_STATIONS,walkPosition} from './walk-state.mjs';
@@ -66,7 +66,7 @@ export function mountMuseumWalk({navigate}){
   const pedestal=mesh(new T.CylinderGeometry(1.65,1.8,.8,64),mats.wall);pedestal.position.set(0,.35,-.8);
   const trim=mesh(new T.TorusGeometry(1.67,.025,8,64),mats.gold);trim.rotation.x=Math.PI/2;trim.position.set(0,.76,-.8);
   const coreLabel=label('学习之核','数据 × 计算 × 学习 / 抽象装置',2.5,.625);coreLabel.position.set(0,.45,1.04);
-  const loaded=await Promise.allSettled([loadEngineeringModel('match'),loadEngineeringModel('gpu'),new GLTFLoader().parseAsync(sculptureBytes.buffer.slice(sculptureBytes.byteOffset,sculptureBytes.byteOffset+sculptureBytes.byteLength),'')]);
+  const loaded=await Promise.allSettled([loadEngineeringModel('match'),loadEngineeringModel('gpu'),loadGltfAsset(sculptureBytes)]);
   loaded.forEach((result,index)=>{
    if(result.status==='rejected'){console.error('展品载入失败',result.reason);return;}
    const root=index===2?result.value.scene:result.value;

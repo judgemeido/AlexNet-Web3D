@@ -1,4 +1,4 @@
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {loadGltfAsset} from './gltf-asset.mjs';
 import computeSystem from './models/compute-system-live.glb';
 import accelerator from './models/accelerator-live.glb';
 import historyNeuron from './models/history-neuron-v003.glb';
@@ -27,9 +27,7 @@ export function hasEngineeringModel(mode) {
 }
 
 export async function loadEngineeringModel(mode) {
-  const bytes = buffers[mode];
-  const buffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
-  const result = await new GLTFLoader().parseAsync(buffer, '');
+  const result = await loadGltfAsset(buffers[mode]);
   let root = result.scene;
   // The history exports keep one named exhibit root so they remain easy to
   // edit in Blender. The web scene expects the independent part groups at

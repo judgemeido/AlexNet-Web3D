@@ -1,5 +1,7 @@
 # Dependencies and generated QA artifacts
 node_modules/
+dist/
+.wrangler/
 output/
 coverage/
 .playwright/

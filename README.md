@@ -71,6 +71,20 @@ GLB 由构建器嵌入离线 script.js，在浏览器内存中解析；独立 GL
 
 ## 开发与验证
 
+### Cloudflare Workers 部署
+
+```powershell
+npm ci
+npm run deploy:check # 构建并执行 Wrangler dry-run，不上传
+npm run deploy       # 构建并部署到 alexnet-web3d
+```
+
+`wrangler.jsonc` 会自动执行 `npm run build:cloudflare`，只发布 `dist/` 中的网页、样式、游戏和 7 个运行时 GLB 模型。直接使用 `npx wrangler deploy` 也会自动构建。Cloudflare Workers 的单文件上限是 25 MiB；构建会检查每个输出文件，模型以独立文件加载，避免将全部 GLB 的 Base64 内容嵌入同一个脚本。部署包不包含 Blender 源文件、生成证据或开发依赖。
+
+在 Cloudflare 的 Git 仓库部署设置中，根目录使用本仓库目录，部署命令使用 `npm run deploy`（或 `npx wrangler deploy`），构建命令可留空，由 Wrangler 自动构建。若界面要求单独填写构建命令，使用 `npm run build:cloudflare`；静态资源目录为 `dist`，不要使用仓库根目录 `.`。
+
+本地在线预览：`npm run preview`。原来的 `npm run build` 继续生成根目录 `script.js`，用于直接打开 `index.html` 的离线版本；离线脚本包含全部模型，不能作为 Cloudflare 上传资产。
+
 ```powershell
 npm ci
 npm test
@@ -97,6 +111,6 @@ npm run build
 
 ## Git 与许可
 
-在 `feature/curated-history` 分支持续管理源码、离线产物、资产、测试和文档。依赖、临时日志、验证截图和交付压缩包不入库。当前已配置 `origin` 为 `pandehong123-ux/AlexNet-Web3D`；本轮只创建本地提交，未推送。
+当前发布仓库为 `judgemeido/AlexNet-Web3D`，生产分支为 `main`。源码、离线产物、模型、测试和文档一起管理；依赖、`dist/`、Wrangler 缓存、临时日志、验证截图和交付压缩包不入库。Cloudflare 从 GitHub 拉取源码，按 `wrangler.jsonc` 自动构建并发布 `dist/`。
 
 Three.js 许可见 `assets/THREE-LICENSE.txt`；ComfyUI 所用本地模型信息和生成来源见 provenance，后续分发请保留模型适用许可。
